@@ -34,9 +34,9 @@ import es.um.asio.importer.oaipmh.model.HeaderType;
 import es.um.asio.importer.oaipmh.model.OAIPMHtype;
 import es.um.asio.importer.oaipmh.model.SetType;
 import es.um.asio.importer.oaipmh.model.xsd.Actas;
+import es.um.asio.importer.oaipmh.model.xsd.Actas.ListaDeAutores.Autor;
 import es.um.asio.importer.oaipmh.model.xsd.ArticuloAcademico;
 import es.um.asio.importer.oaipmh.model.xsd.ObjectFactory;
-import es.um.asio.importer.oaipmh.model.xsd.Actas.ListaDeAutores.Autor;
 import es.um.asio.importer.oaipmh.writer.OaipmhWriter;
 
 public class DataOaipmhProcessor implements Tasklet {
@@ -107,7 +107,7 @@ public class DataOaipmhProcessor implements Tasklet {
 								+ uriFactoryEndpointIds.concat(set.getSetSpec()));
 					} else {
 						for (HeaderType setID : responseIds.getBody().getListIdentifiers().getHeader()) {
-
+							logger.info("Spec: " + set.getSetSpec() + ", ID: " + setID.getIdentifier());
 							try {
 								responseXml = restTemplate.getForEntity(
 										uriFactoryEndpointXml.concat(setID.getIdentifier()), OAIPMHtype.class);

@@ -21,7 +21,7 @@ public abstract class OaipmhBeansMapperDecoratorImpl implements OaipmhBeansMappe
 		}
 
 		ActasSGI actaSGI = this.delegate.mapperActas(acta);
-		if (acta.getAutorCorrespondiente().getId() != null) {
+		if (acta.getAutorCorrespondiente() != null) {
 			actaSGI.setIdautorCorrespondiente(acta.getAutorCorrespondiente().getId());
 		}
 
@@ -51,7 +51,7 @@ public abstract class OaipmhBeansMapperDecoratorImpl implements OaipmhBeansMappe
 		}
 
 		ArticuloAcademicoSGI articuloAcademicoSGI = this.delegate.mapperArticuloAcademico(articuloAcademico);
-		if (articuloAcademico.getAutorCorrespondiente().getId() != null) {
+		if (articuloAcademico.getAutorCorrespondiente() != null) {
 			articuloAcademicoSGI.setIdautorCorrespondiente(articuloAcademico.getAutorCorrespondiente().getId());
 		}
 
