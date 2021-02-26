@@ -35,6 +35,8 @@
 		<m2e.apt.activation>jdt_apt</m2e.apt.activation>
 		<nvd.mirror.url>http://192.168.1.246:9082</nvd.mirror.url>
 
+		<cucumber.version>6.4.0</cucumber.version>
+
 		<!-- sonar -->
 		<sonar.sources>pom.xml,src/main</sonar.sources>
 		<sonar.tests></sonar.tests>
@@ -487,6 +489,50 @@
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
 			</plugin>
+
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<version>0.14.0</version>
+				<executions>				
+					<execution>
+						<id>1</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<schemaIncludes>
+								<include>OAI-PMHSchema.xsl</include>
+							</schemaIncludes>
+							<generatePackage>es.um.asio.importer.oaipmh.model</generatePackage>
+							<generateDirectory>${project.build.directory}/generated-sources/annotations</generateDirectory>
+						</configuration>
+					</execution>
+					
+				</executions>
+				<configuration>
+					<extension>true</extension>
+					<args>
+						<arg>-Xannotate</arg>
+						<arg>-Xinheritance</arg>
+					</args>
+					<schemaDirectory>src/main/resources/oaischema</schemaDirectory>
+					<plugins>
+						<plugin>
+							<groupId>org.jvnet.jaxb2_commons</groupId>
+							<artifactId>jaxb2-basics</artifactId>
+							<version>1.11.1</version>
+						</plugin>
+						<plugin>
+							<groupId>org.jvnet.jaxb2_commons</groupId>
+							<artifactId>jaxb2-basics-annotate</artifactId>
+							<version>1.1.0</version>
+						</plugin>
+					</plugins>
+				</configuration>
+			</plugin>
+			
 		</plugins>
 	</build>
 
