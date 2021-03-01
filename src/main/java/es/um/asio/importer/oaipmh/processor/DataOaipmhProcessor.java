@@ -36,7 +36,6 @@ import es.um.asio.importer.oaipmh.model.SetType;
 import es.um.asio.importer.oaipmh.model.xsd.Actas;
 import es.um.asio.importer.oaipmh.model.xsd.Actas.ListaDeAutores.Autor;
 import es.um.asio.importer.oaipmh.model.xsd.ArticuloAcademico;
-import es.um.asio.importer.oaipmh.model.xsd.ObjectFactory;
 import es.um.asio.importer.oaipmh.writer.OaipmhWriter;
 
 public class DataOaipmhProcessor implements Tasklet {
@@ -93,7 +92,7 @@ public class DataOaipmhProcessor implements Tasklet {
 			restTemplate = new RestTemplate();
 			ResponseEntity<OAIPMHtype> response = restTemplate.getForEntity(uriFactoryEndpointList, OAIPMHtype.class);
 
-			if (response.getBody() != null && response.getBody().getListSets() != null) {
+			if (response != null && response.getBody() != null && response.getBody().getListSets() != null) {
 
 				for (SetType set : response.getBody().getListSets().getSet()) {
 					try {
@@ -102,10 +101,12 @@ public class DataOaipmhProcessor implements Tasklet {
 					} catch (Exception e) {
 						logger.error(e.getMessage());
 					}
-					if (responseIds != null && responseIds.getBody().getError().size() != 0) {
+					if (responseIds != null && response.getBody() != null
+							&& responseIds.getBody().getError().size() != 0) {
 						logger.debug(responseIds.getBody().getError().get(0).getValue() + " - URL: "
 								+ uriFactoryEndpointIds.concat(set.getSetSpec()));
-					} else {
+					} else if (responseIds.getBody() != null && responseIds.getBody().getListIdentifiers() != null
+							&& responseIds.getBody().getListIdentifiers().getHeader() != null) {
 						for (HeaderType setID : responseIds.getBody().getListIdentifiers().getHeader()) {
 							logger.info("Spec: " + set.getSetSpec() + ", ID: " + setID.getIdentifier());
 							try {
@@ -114,10 +115,12 @@ public class DataOaipmhProcessor implements Tasklet {
 							} catch (Exception e) {
 								logger.error(e.getMessage());
 							}
-							if (responseXml == null || responseXml.getBody().getError().size() != 0) {
+							if (responseXml != null && responseXml.getBody() != null
+									&& responseXml.getBody().getError() != null
+									&& responseXml.getBody().getError().size() != 0) {
 								logger.debug(responseXml.getBody().getError().get(0).getValue() + " - URL: "
 										+ uriFactoryEndpointXml.concat(setID.getIdentifier()));
-							} else if (responseXml != null) {
+							} else if (responseXml != null && responseXml.getBody() != null) {
 
 								if (responseXml.getBody().getIdentify() != null
 										&& responseXml.getBody().getIdentify().getDeletedRecord() != null) {
@@ -176,56 +179,64 @@ public class DataOaipmhProcessor implements Tasklet {
 		InputData<DataSetData> data;
 		RelArticuloAcademicoAutor relArticuloAcademicoAutor = null;
 		DataSetData domain = null;
-		Object articuloAcadElement = responseXml.getBody().getGetRecord().getRecord().getMetadata().getAny();
+		if (responseXml.getBody() != null && responseXml.getBody().getGetRecord() != null
+				&& responseXml.getBody().getGetRecord().getRecord() != null
+				&& responseXml.getBody().getGetRecord().getRecord().getMetadata() != null
+				&& responseXml.getBody().getGetRecord().getRecord().getMetadata().getAny() != null) {
 
-		JAXBContext context;
-		try {
-			context = JAXBContext.newInstance("es.um.asio.importer.oaipmh.model.xsd",
-					ArticuloAcademico.class.getClassLoader());
-			Unmarshaller um;
+			Object articuloAcadElement = responseXml.getBody().getGetRecord().getRecord().getMetadata().getAny();
 
-			um = context.createUnmarshaller();
+			JAXBContext context;
+			try {
+				context = JAXBContext.newInstance("es.um.asio.importer.oaipmh.model.xsd",
+						ArticuloAcademico.class.getClassLoader());
+				Unmarshaller um;
 
-			ArticuloAcademico articuloAcademico;
+				um = context.createUnmarshaller();
 
-			articuloAcademico = (ArticuloAcademico) um.unmarshal((Node) articuloAcadElement);
+				ArticuloAcademico articuloAcademico;
 
-			logger.debug("response: " + articuloAcademico.toString());
+				articuloAcademico = (ArticuloAcademico) um.unmarshal((Node) articuloAcadElement);
 
-			domain = new ArticuloAcademicoSGI();
-			domain.setVersion(jobExecutionId);
-			data = new InputData<DataSetData>();
+				logger.debug("response: " + articuloAcademico.toString());
 
-			ArticuloAcademicoSGI articuloAcadSgi = this.mapper.mapperArticuloAcademico(articuloAcademico);
-			articuloAcadSgi.setId(responseXml.getBody().getGetRecord().getRecord().getHeader().getIdentifier());
+				domain = new ArticuloAcademicoSGI();
+				domain.setVersion(jobExecutionId);
+				data = new InputData<DataSetData>();
 
-			domain = articuloAcadSgi;
-			data.setData(domain);
-			logger.info("Processing DataSetData {}", domain.getClass());
-			listActas.add(data);
-
-			if (articuloAcademico.getListaDeAutores() != null
-					&& articuloAcademico.getListaDeAutores().getAutor() != null) {
-				for (es.um.asio.importer.oaipmh.model.xsd.ArticuloAcademico.ListaDeAutores.Autor autor : articuloAcademico
-						.getListaDeAutores().getAutor()) {
-					domain = new RelArticuloAcademicoAutor();
-					data = new InputData<DataSetData>();
-					relArticuloAcademicoAutor = new RelArticuloAcademicoAutor();
-					relArticuloAcademicoAutor.setIdArticuloAcademico(articuloAcadSgi.getId());
-					relArticuloAcademicoAutor.setIdAutor(autor.getId());
-					domain = relArticuloAcademicoAutor;
-					domain.setVersion(jobExecutionId);
-					data.setData(domain);
-					logger.info("Processing DataSetData {}", domain.getClass());
-					listActas.add(data);
+				ArticuloAcademicoSGI articuloAcadSgi = this.mapper.mapperArticuloAcademico(articuloAcademico);
+				if (responseXml.getBody().getGetRecord().getRecord().getHeader() != null
+						&& responseXml.getBody().getGetRecord().getRecord().getHeader().getIdentifier() != null) {
+					articuloAcadSgi.setId(responseXml.getBody().getGetRecord().getRecord().getHeader().getIdentifier());
 				}
+
+				domain = articuloAcadSgi;
+				data.setData(domain);
+				logger.info("Processing DataSetData {}", domain.getClass());
+				listActas.add(data);
+
+				if (articuloAcademico.getListaDeAutores() != null
+						&& articuloAcademico.getListaDeAutores().getAutor() != null) {
+					for (es.um.asio.importer.oaipmh.model.xsd.ArticuloAcademico.ListaDeAutores.Autor autor : articuloAcademico
+							.getListaDeAutores().getAutor()) {
+						domain = new RelArticuloAcademicoAutor();
+						data = new InputData<DataSetData>();
+						relArticuloAcademicoAutor = new RelArticuloAcademicoAutor();
+						relArticuloAcademicoAutor.setIdArticuloAcademico(articuloAcadSgi.getId());
+						relArticuloAcademicoAutor.setIdAutor(autor.getId());
+						domain = relArticuloAcademicoAutor;
+						domain.setVersion(jobExecutionId);
+						data.setData(domain);
+						logger.info("Processing DataSetData {}", domain.getClass());
+						listActas.add(data);
+					}
+				}
+
+			} catch (JAXBException e) {
+				logger.error(e.getMessage());
+
 			}
-
-		} catch (JAXBException e) {
-			logger.error(e.getMessage());
-
 		}
-
 		return listActas;
 	}
 
@@ -234,54 +245,60 @@ public class DataOaipmhProcessor implements Tasklet {
 		InputData<DataSetData> data;
 		RelActasAutores relActaAutor = null;
 		DataSetData domain = null;
+		if (responseXml.getBody() != null && responseXml.getBody().getGetRecord() != null
+				&& responseXml.getBody().getGetRecord().getRecord() != null
+				&& responseXml.getBody().getGetRecord().getRecord().getMetadata() != null
+				&& responseXml.getBody().getGetRecord().getRecord().getMetadata().getAny() != null) {
+			Object actaElement = responseXml.getBody().getGetRecord().getRecord().getMetadata().getAny();
 
-		Object actaElement = responseXml.getBody().getGetRecord().getRecord().getMetadata().getAny();
+			JAXBContext context;
+			try {
+				context = JAXBContext.newInstance("es.um.asio.importer.oaipmh.model.xsd", Actas.class.getClassLoader());
+				Unmarshaller um;
 
-		JAXBContext context;
-		try {
-			context = JAXBContext.newInstance(ObjectFactory.class.getPackage().getName());
-			Unmarshaller um;
+				um = context.createUnmarshaller();
 
-			um = context.createUnmarshaller();
+				Actas acta;
 
-			Actas acta;
+				acta = (Actas) um.unmarshal((Node) actaElement);
 
-			acta = (Actas) um.unmarshal((Node) actaElement);
+				logger.debug("response: " + acta.toString());
 
-			logger.debug("response: " + acta.toString());
+				domain = new ActasSGI();
+				domain.setVersion(jobExecutionId);
+				data = new InputData<DataSetData>();
 
-			domain = new ActasSGI();
-			domain.setVersion(jobExecutionId);
-			data = new InputData<DataSetData>();
-
-			ActasSGI actaSgi = this.mapper.mapperActas(acta);
-			actaSgi.setId(responseXml.getBody().getGetRecord().getRecord().getHeader().getIdentifier());
-
-			domain = actaSgi;
-			data.setData(domain);
-			logger.info("Processing DataSetData {}", domain.getClass());
-			listActas.add(data);
-
-			if (acta.getListaDeAutores() != null && acta.getListaDeAutores().getAutor() != null) {
-				for (Autor autor : acta.getListaDeAutores().getAutor()) {
-					domain = new RelActasAutores();
-					data = new InputData<DataSetData>();
-					relActaAutor = new RelActasAutores();
-					relActaAutor.setIdActas(actaSgi.getId());
-					relActaAutor.setIdAutor(autor.getId());
-					domain = relActaAutor;
-					domain.setVersion(jobExecutionId);
-					data.setData(domain);
-					logger.info("Processing DataSetData {}", domain.getClass());
-					listActas.add(data);
+				ActasSGI actaSgi = this.mapper.mapperActas(acta);
+				if (responseXml.getBody().getGetRecord().getRecord().getHeader() != null
+						&& responseXml.getBody().getGetRecord().getRecord().getHeader().getIdentifier() != null) {
+					actaSgi.setId(responseXml.getBody().getGetRecord().getRecord().getHeader().getIdentifier());
 				}
+
+				domain = actaSgi;
+				data.setData(domain);
+				logger.info("Processing DataSetData {}", domain.getClass());
+				listActas.add(data);
+
+				if (acta.getListaDeAutores() != null && acta.getListaDeAutores().getAutor() != null) {
+					for (Autor autor : acta.getListaDeAutores().getAutor()) {
+						domain = new RelActasAutores();
+						data = new InputData<DataSetData>();
+						relActaAutor = new RelActasAutores();
+						relActaAutor.setIdActas(actaSgi.getId());
+						relActaAutor.setIdAutor(autor.getId());
+						domain = relActaAutor;
+						domain.setVersion(jobExecutionId);
+						data.setData(domain);
+						logger.info("Processing DataSetData {}", domain.getClass());
+						listActas.add(data);
+					}
+				}
+
+			} catch (JAXBException e) {
+				logger.error(e.getMessage());
+
 			}
-
-		} catch (JAXBException e) {
-			logger.error(e.getMessage());
-
 		}
-
 		return listActas;
 	}
 

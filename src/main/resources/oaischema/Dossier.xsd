@@ -1,5 +1,5 @@
 <!-- 04/02/2021 -->
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openarchives.org/OAI/2.0/">
 	<xsd:element name = "Dossier">
 		<xsd:complexType>
 			<xsd:all>
