@@ -92,48 +92,81 @@ public class DataOaipmhProcessor implements Tasklet {
 			restTemplate = new RestTemplate();
 			ResponseEntity<OAIPMHtype> response = restTemplate.getForEntity(uriFactoryEndpointList, OAIPMHtype.class);
 
-			if (response != null && response.getBody() != null && response.getBody().getListSets() != null) {
+			if (response != null) {
 
-				for (SetType set : response.getBody().getListSets().getSet()) {
-					try {
-						responseIds = restTemplate.getForEntity(uriFactoryEndpointIds.concat(set.getSetSpec()),
-								OAIPMHtype.class);
-					} catch (Exception e) {
-						logger.error(e.getMessage());
-					}
-					if (responseIds != null && response.getBody() != null
-							&& responseIds.getBody().getError().size() != 0) {
-						logger.debug(responseIds.getBody().getError().get(0).getValue() + " - URL: "
-								+ uriFactoryEndpointIds.concat(set.getSetSpec()));
-					} else if (responseIds.getBody() != null && responseIds.getBody().getListIdentifiers() != null
-							&& responseIds.getBody().getListIdentifiers().getHeader() != null) {
-						for (HeaderType setID : responseIds.getBody().getListIdentifiers().getHeader()) {
-							logger.info("Spec: " + set.getSetSpec() + ", ID: " + setID.getIdentifier());
+				OAIPMHtype bodySpec = response.getBody();
+
+				if (bodySpec != null) {
+					if (bodySpec.getListSets() != null) {
+
+						for (SetType set : response.getBody().getListSets().getSet()) {
 							try {
-								responseXml = restTemplate.getForEntity(
-										uriFactoryEndpointXml.concat(setID.getIdentifier()), OAIPMHtype.class);
+
+								responseIds = restTemplate.getForEntity(uriFactoryEndpointIds.concat(set.getSetSpec()),
+										OAIPMHtype.class);
+
+								if (responseIds != null) {
+									OAIPMHtype bodyIds = response.getBody();
+
+									if (bodyIds != null) {
+
+										if (bodyIds.getError() != null && bodyIds.getError().size() != 0) {
+											logger.debug(bodyIds.getError().get(0).getValue() + " - URL: "
+													+ uriFactoryEndpointIds.concat(set.getSetSpec()));
+										} else if (bodyIds.getListIdentifiers() != null
+												&& bodyIds.getListIdentifiers().getHeader() != null) {
+
+											for (HeaderType setID : responseIds.getBody().getListIdentifiers()
+													.getHeader()) {
+												logger.info(
+														"Spec: " + set.getSetSpec() + ", ID: " + setID.getIdentifier());
+												try {
+													responseXml = restTemplate.getForEntity(
+															uriFactoryEndpointXml.concat(setID.getIdentifier()),
+															OAIPMHtype.class);
+
+													if (responseXml != null) {
+														OAIPMHtype bodyXML = responseXml.getBody();
+
+														if (bodyXML != null) {
+															if (bodyXML.getError() != null
+																	&& bodyXML.getError().size() != 0) {
+																logger.debug(bodyXML.getError().get(0).getValue()
+																		+ " - URL: " + uriFactoryEndpointXml
+																				.concat(setID.getIdentifier()));
+															} else if (bodyXML != null) {
+
+																if (bodyXML.getIdentify() != null && bodyXML
+																		.getIdentify().getDeletedRecord() != null) {
+																	// TODO DELETE
+																	System.out.println("DELETEEEEEEEE");
+																} else {
+
+																	mappingObjects(list, bodyXML, set.getSetSpec());
+
+																}
+															}
+
+														}
+													}
+
+												} catch (Exception e) {
+													logger.error(e.getMessage());
+												}
+
+											}
+										}
+
+									}
+								}
+
 							} catch (Exception e) {
 								logger.error(e.getMessage());
 							}
-							if (responseXml != null && responseXml.getBody() != null
-									&& responseXml.getBody().getError() != null
-									&& responseXml.getBody().getError().size() != 0) {
-								logger.debug(responseXml.getBody().getError().get(0).getValue() + " - URL: "
-										+ uriFactoryEndpointXml.concat(setID.getIdentifier()));
-							} else if (responseXml != null && responseXml.getBody() != null) {
 
-								if (responseXml.getBody().getIdentify() != null
-										&& responseXml.getBody().getIdentify().getDeletedRecord() != null) {
-									// TODO DELETE
-									System.out.println("DELETEEEEEEEE");
-								} else {
-
-									mappingObjects(list, responseXml, set.getSetSpec());
-
-								}
-							}
 						}
 					}
+
 				}
 			} else {
 				logger.info("nothing on response SGI");
@@ -155,18 +188,17 @@ public class DataOaipmhProcessor implements Tasklet {
 		return RepeatStatus.FINISHED;
 	}
 
-	private void mappingObjects(List<InputData<DataSetData>> list, ResponseEntity<OAIPMHtype> responseXml,
-			String setSpec) {
+	private void mappingObjects(List<InputData<DataSetData>> list, OAIPMHtype bodyXML, String setSpec) {
 		List<InputData<DataSetData>> listActas = null;
 		switch (setSpec) {
 		case Constants.ACTAS:
-			listActas = mappingActas(responseXml);
+			listActas = mappingActas(bodyXML);
 			if (listActas != null && listActas.size() != 0)
 				list.addAll(listActas);
 			break;
 
 		case Constants.ARTICULO_ACADEMICO:
-			listActas = mappingArticuloAcademico(responseXml);
+			listActas = mappingArticuloAcademico(bodyXML);
 			if (listActas != null && listActas.size() != 0)
 				list.addAll(listActas);
 			break;
@@ -174,17 +206,16 @@ public class DataOaipmhProcessor implements Tasklet {
 
 	}
 
-	private List<InputData<DataSetData>> mappingArticuloAcademico(ResponseEntity<OAIPMHtype> responseXml) {
+	private List<InputData<DataSetData>> mappingArticuloAcademico(OAIPMHtype bodyXML) {
 		List<InputData<DataSetData>> listActas = new ArrayList<>();
 		InputData<DataSetData> data;
 		RelArticuloAcademicoAutor relArticuloAcademicoAutor = null;
 		DataSetData domain = null;
-		if (responseXml.getBody() != null && responseXml.getBody().getGetRecord() != null
-				&& responseXml.getBody().getGetRecord().getRecord() != null
-				&& responseXml.getBody().getGetRecord().getRecord().getMetadata() != null
-				&& responseXml.getBody().getGetRecord().getRecord().getMetadata().getAny() != null) {
+		if (bodyXML != null && bodyXML.getGetRecord() != null && bodyXML.getGetRecord().getRecord() != null
+				&& bodyXML.getGetRecord().getRecord().getMetadata() != null
+				&& bodyXML.getGetRecord().getRecord().getMetadata().getAny() != null) {
 
-			Object articuloAcadElement = responseXml.getBody().getGetRecord().getRecord().getMetadata().getAny();
+			Object articuloAcadElement = bodyXML.getGetRecord().getRecord().getMetadata().getAny();
 
 			JAXBContext context;
 			try {
@@ -205,9 +236,9 @@ public class DataOaipmhProcessor implements Tasklet {
 				data = new InputData<DataSetData>();
 
 				ArticuloAcademicoSGI articuloAcadSgi = this.mapper.mapperArticuloAcademico(articuloAcademico);
-				if (responseXml.getBody().getGetRecord().getRecord().getHeader() != null
-						&& responseXml.getBody().getGetRecord().getRecord().getHeader().getIdentifier() != null) {
-					articuloAcadSgi.setId(responseXml.getBody().getGetRecord().getRecord().getHeader().getIdentifier());
+				if (bodyXML.getGetRecord().getRecord().getHeader() != null
+						&& bodyXML.getGetRecord().getRecord().getHeader().getIdentifier() != null) {
+					articuloAcadSgi.setId(bodyXML.getGetRecord().getRecord().getHeader().getIdentifier());
 				}
 
 				domain = articuloAcadSgi;
@@ -240,16 +271,15 @@ public class DataOaipmhProcessor implements Tasklet {
 		return listActas;
 	}
 
-	private List<InputData<DataSetData>> mappingActas(ResponseEntity<OAIPMHtype> responseXml) {
+	private List<InputData<DataSetData>> mappingActas(OAIPMHtype bodyXML) {
 		List<InputData<DataSetData>> listActas = new ArrayList<>();
 		InputData<DataSetData> data;
 		RelActasAutores relActaAutor = null;
 		DataSetData domain = null;
-		if (responseXml.getBody() != null && responseXml.getBody().getGetRecord() != null
-				&& responseXml.getBody().getGetRecord().getRecord() != null
-				&& responseXml.getBody().getGetRecord().getRecord().getMetadata() != null
-				&& responseXml.getBody().getGetRecord().getRecord().getMetadata().getAny() != null) {
-			Object actaElement = responseXml.getBody().getGetRecord().getRecord().getMetadata().getAny();
+		if (bodyXML != null && bodyXML.getGetRecord() != null && bodyXML.getGetRecord().getRecord() != null
+				&& bodyXML.getGetRecord().getRecord().getMetadata() != null
+				&& bodyXML.getGetRecord().getRecord().getMetadata().getAny() != null) {
+			Object actaElement = bodyXML.getGetRecord().getRecord().getMetadata().getAny();
 
 			JAXBContext context;
 			try {
@@ -269,9 +299,9 @@ public class DataOaipmhProcessor implements Tasklet {
 				data = new InputData<DataSetData>();
 
 				ActasSGI actaSgi = this.mapper.mapperActas(acta);
-				if (responseXml.getBody().getGetRecord().getRecord().getHeader() != null
-						&& responseXml.getBody().getGetRecord().getRecord().getHeader().getIdentifier() != null) {
-					actaSgi.setId(responseXml.getBody().getGetRecord().getRecord().getHeader().getIdentifier());
+				if (bodyXML.getGetRecord().getRecord().getHeader() != null
+						&& bodyXML.getGetRecord().getRecord().getHeader().getIdentifier() != null) {
+					actaSgi.setId(bodyXML.getGetRecord().getRecord().getHeader().getIdentifier());
 				}
 
 				domain = actaSgi;
