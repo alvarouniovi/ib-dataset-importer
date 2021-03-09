@@ -1,11 +1,17 @@
 package es.um.asio.importer.oaipmh.mapper;
 
+import java.util.Date;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import es.um.asio.domain.sgi.model.actas.ActasSGI;
+import es.um.asio.domain.sgi.model.actividad.ActividadSGI;
 import es.um.asio.domain.sgi.model.articuloAcademico.ArticuloAcademicoSGI;
 import es.um.asio.importer.oaipmh.model.xsd.Actas;
+import es.um.asio.importer.oaipmh.model.xsd.Actividad;
 import es.um.asio.importer.oaipmh.model.xsd.ArticuloAcademico;
 
 public abstract class OaipmhBeansMapperDecoratorImpl implements OaipmhBeansMapper {
@@ -45,6 +51,43 @@ public abstract class OaipmhBeansMapperDecoratorImpl implements OaipmhBeansMappe
 	}
 
 	@Override
+	public ActividadSGI mapperActividad(Actividad actividad) {
+		if (actividad == null) {
+			return null;
+		}
+
+		ActividadSGI actividadSGI = this.delegate.mapperActividad(actividad);
+
+		if (actividad.getIntervaloDeTiempo() != null) {
+			actividadSGI.setFechaFin(xmlGregorianCalendarToDate(actividad.getIntervaloDeTiempo().getFechaFin()));
+			actividadSGI.setFechaInicio(xmlGregorianCalendarToDate(actividad.getIntervaloDeTiempo().getFechaInicio()));
+
+		}
+
+		if (actividad.getParticipaOrganizacion() != null) {
+			actividadSGI.setIdparticipaOrganizacion(actividad.getParticipaOrganizacion().getId());
+		}
+
+		if (actividad.getParticipaPersona() != null) {
+			actividadSGI.setIdparticipaPersona(actividad.getParticipaPersona().getId());
+		}
+
+		if (actividad.getSeRelacionaGasto() != null) {
+			actividadSGI.setIdseRelacionaGasto(actividad.getSeRelacionaGasto().getId());
+		}
+
+		if (actividad.getLocalizadoEn() != null) {
+			actividadSGI.setIdlocalizadoEn(actividad.getLocalizadoEn().getId());
+		}
+
+		if (actividad.getSeRelacionaRol() != null) {
+			actividadSGI.setIdseRelacionaRol(actividad.getSeRelacionaRol().getId());
+		}
+
+		return actividadSGI;
+	}
+
+	@Override
 	public ArticuloAcademicoSGI mapperArticuloAcademico(ArticuloAcademico articuloAcademico) {
 		if (articuloAcademico == null) {
 			return null;
@@ -79,6 +122,14 @@ public abstract class OaipmhBeansMapperDecoratorImpl implements OaipmhBeansMappe
 		}
 
 		return articuloAcademicoSGI;
+	}
+
+	private static Date xmlGregorianCalendarToDate(XMLGregorianCalendar xcal) {
+		if (xcal == null) {
+			return null;
+		}
+
+		return xcal.toGregorianCalendar().getTime();
 	}
 
 }

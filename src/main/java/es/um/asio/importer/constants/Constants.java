@@ -28,4 +28,6 @@ public final class Constants {
 
 	public static final String ARTICULO_ACADEMICO = "ArticuloAcademico";
 
+	public static final String ACTIVIDAD = "Actividad";
+
 }

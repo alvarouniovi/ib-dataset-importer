@@ -61,6 +61,7 @@ Se han configurado los siguientes Jobs:
 
 - `importDataSetJob`: job encargado de procesar datos a partir de los XML del dataset
 - `importCvnJob`: job encargado de procesar CVN a partir de los servicios web
+- `importOaipmhJob`: job encargado de procesar SGI (OAIPMH) a partir de los servicios web
 
 Estos jobs se encargan de leer los datos correspondientes, generar un JSON con los datos y posteriormente insertarlo en un topic de Kafka.
 
@@ -73,6 +74,13 @@ Estos jobs se encargan de leer los datos correspondientes, generar un JSON con l
 * `app.services.cvn.mockup.enabled`: Booleano para indicar si se utilizan servicios mock para obtener los CVN. Valor por defecto: true
 * `app.services.input-processor.endpoint`: Dirección del servidor para obtener los datos de importaciones anteriores. Valor por defecto: localhost:9322
 * `app.services.input-processor.mockup.enabled`: Booleano para indicar si se utilizan servicios mock para obtener los resultados de las importaciones anteriores. Valor por defecto: true
+* `app.services.oai.endpoint`: Dirección base del servidor de SGI. Valor por defecto: http://herc-as-front-desa.atica.um.es/oai-pmh-xml/OAI_PMH
+* `app.services.oai.endpoint-list`: Dirección del servicio de SGI para obtener el listado de Specs. Valor por defecto: ${app.services.oai.endpoint}?verb=ListSets
+* `app.services.oai.endpoint-xml`: Dirección del servicio de SGI para obtener el XML mediante un ID. Valor por defecto: ${app.services.oai.endpoint}?verb=GetRecord&metadataPrefix=XML_ASIO&identifier=
+* `app.services.oai.endpoint-ids`: Dirección del servicio de SGI para obtener el listado de IDs de una SPEC. Valor por defecto: ${app.services.oai.endpoint}?verb=ListIdentifiers&metadataPrefix=XML_ASIO&set=
+
+
+
 
 ## Cómo crear un nuevo Job
 

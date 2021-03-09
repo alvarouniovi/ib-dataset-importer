@@ -25,9 +25,7 @@ app:
       endpoint: http://localhost:9322
       endpoint-import-search: ${app.services.input-processor.endpoint}/import-result/search      
 # SGI  
-    oai:
-      mockup:
-        enabled: true 
+    oai:      
       endpoint: http://herc-as-front-desa.atica.um.es/oai-pmh-xml/OAI_PMH
       endpoint-list: ${app.services.oai.endpoint}?verb=ListSets
       endpoint-xml: ${app.services.oai.endpoint}?verb=GetRecord&metadataPrefix=XML_ASIO&identifier=

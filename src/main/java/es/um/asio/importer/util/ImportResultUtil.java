@@ -1,5 +1,9 @@
 package es.um.asio.importer.util;
 
+import java.util.Date;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.springframework.batch.core.JobExecution;
 
 import es.um.asio.abstractions.domain.ExitStatusCode;
@@ -39,5 +43,13 @@ public class ImportResultUtil {
 		importResult.setVersion(jobExecution.getId());
 
 		return importResult;
+	}
+
+	public static Date xmlGregorianCalendarToDate(XMLGregorianCalendar xcal) {
+		if (xcal == null) {
+			return null;
+		}
+
+		return xcal.toGregorianCalendar().getTime();
 	}
 }
