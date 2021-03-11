@@ -125,7 +125,12 @@ Será preciso configurar las siguientes variables de entorno cuando se instale e
 |`APP_SERVICES_CVN_ENDPOINT`| URL del servicio para obtener CVN | http://curriculumpruebas.um.es/curriculum/rest/v1/auth |
 |`APP_SERVICES_CVN_MOCKUP_ENABLED`| Indica si se deben utilizar servicios mock para obtener los CVN. Valores admisibles: `true` y `false` | true |
 |`APP_SERVICES_INPUTPROCESSOR_ENDPOINT`| URL del servicio para obtener datos de importaciones anteriores | localhost:9322 |
-|`APP_SERVICES_INPUTPROCESSOR_MOCKUP_ENABLED`| Indica si se deben utilizar servicios mock para obtener datos de importaciones anteriores. Valores admisibles: `true` y `false` | true |
+|`APP_SERVICES_INPUTPROCESSOR_MOCKUP_ENABLED`| Indica si se deben utilizar servicios mock para obtener datos de importaciones anteriores. Valores admisibles: `true` y `false` | true | |
+|`APP_SERVICES_OAI_ENDPOINT`| Dirección base del servidor de SGI. Valor por defecto| http://herc-as-front-desa.atica.um.es/oai-pmh-xml/OAI_PMH | |
+|`APP_SERVICES_OAI_ENDPOINT_LIST`| Dirección del servicio de SGI para obtener el listado de Specs. Valor por defecto | ${app.services.oai.endpoint}?verb=ListSets | |
+|`APP_SERVICES_OAI_ENDPOINT_XML`| Dirección del servicio de SGI para obtener el XML mediante un ID. Valor por defecto | ${app.services.oai.endpoint}?verb=GetRecord&metadataPrefix=XML_ASIO&identifier= | |
+|`APP_SERVICES_OAI_ENDPOINT_IDS`| Dirección del servicio de SGI para obtener el listado de IDs de una SPEC. Valor por defecto | ${app.services.oai.endpoint}?verb=ListIdentifiers&metadataPrefix=XML_ASIO&set= | |
+
 
 ## Testing y cobertura
 
