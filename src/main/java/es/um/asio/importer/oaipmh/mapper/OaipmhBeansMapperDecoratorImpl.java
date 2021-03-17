@@ -9,10 +9,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import es.um.asio.domain.sgi.model.actas.ActasSGI;
 import es.um.asio.domain.sgi.model.actividad.ActividadSGI;
+import es.um.asio.domain.sgi.model.actuacion.ActuacionSGI;
+import es.um.asio.domain.sgi.model.articulo.ArticuloSGI;
 import es.um.asio.domain.sgi.model.articuloAcademico.ArticuloAcademicoSGI;
+import es.um.asio.domain.sgi.model.articuloConferencia.ArticuloConferenciaSGI;
 import es.um.asio.importer.oaipmh.model.xsd.Actas;
 import es.um.asio.importer.oaipmh.model.xsd.Actividad;
+import es.um.asio.importer.oaipmh.model.xsd.Actuacion;
+import es.um.asio.importer.oaipmh.model.xsd.Articulo;
 import es.um.asio.importer.oaipmh.model.xsd.ArticuloAcademico;
+import es.um.asio.importer.oaipmh.model.xsd.ArticuloConferencia;
 
 public abstract class OaipmhBeansMapperDecoratorImpl implements OaipmhBeansMapper {
 
@@ -88,6 +94,58 @@ public abstract class OaipmhBeansMapperDecoratorImpl implements OaipmhBeansMappe
 	}
 
 	@Override
+	public ActuacionSGI mapperActuacion(Actuacion actuacion) {
+		if (actuacion == null) {
+			return null;
+		}
+
+		ActuacionSGI actuacionSGI = this.delegate.mapperActuacion(actuacion);
+
+		if (actuacion.getIntervaloDeTiempo() != null) {
+			actuacionSGI.setFechaFin(xmlGregorianCalendarToDate(actuacion.getIntervaloDeTiempo().getFechaFin()));
+			actuacionSGI.setFechaInicio(xmlGregorianCalendarToDate(actuacion.getIntervaloDeTiempo().getFechaInicio()));
+		}
+
+		if (actuacion.getParticipaOrganizacion() != null) {
+			actuacionSGI.setIdparticipaOrganizacion(actuacion.getParticipaOrganizacion().getId());
+
+		}
+
+		if (actuacion.getParticipaPersona() != null) {
+			actuacionSGI.setIdparticipaPersona(actuacion.getParticipaPersona().getId());
+
+		}
+
+		return actuacionSGI;
+	}
+
+	@Override
+	public ArticuloSGI mapperArticulo(Articulo articulo) {
+		if (articulo == null) {
+			return null;
+		}
+
+		ArticuloSGI articuloSGI = this.delegate.mapperArticulo(articulo);
+		if (articulo.getAutorCorrespondiente() != null) {
+			articuloSGI.setIdautorCorrespondiente(articulo.getAutorCorrespondiente().getId());
+		}
+
+		if (articulo.getOrganizacionCorrespondiente() != null) {
+			articuloSGI.setIdorganizacionCorrespondiente(articulo.getOrganizacionCorrespondiente().getId());
+		}
+
+		if (articulo.getTieneColeccionDePublicacion() != null) {
+			articuloSGI.setIdtieneColeccionDePublicacion(articulo.getTieneColeccionDePublicacion().getId());
+		}
+
+		if (articulo.getTieneLibroDePublicacion() != null) {
+			articuloSGI.setIdtieneLibroDePublicacion(articulo.getTieneLibroDePublicacion().getId());
+		}
+
+		return articuloSGI;
+	}
+
+	@Override
 	public ArticuloAcademicoSGI mapperArticuloAcademico(ArticuloAcademico articuloAcademico) {
 		if (articuloAcademico == null) {
 			return null;
@@ -124,6 +182,41 @@ public abstract class OaipmhBeansMapperDecoratorImpl implements OaipmhBeansMappe
 		return articuloAcademicoSGI;
 	}
 
+	@Override
+	public ArticuloConferenciaSGI mapperArticuloConferencia(ArticuloConferencia articuloConferencia) {
+		if (articuloConferencia == null) {
+			return null;
+		}
+
+		ArticuloConferenciaSGI articuloConferenciaSGI = this.delegate.mapperArticuloConferencia(articuloConferencia);
+		if (articuloConferencia.getAutorCorrespondiente() != null) {
+			articuloConferenciaSGI.setIdautorCorrespondiente(articuloConferencia.getAutorCorrespondiente().getId());
+		}
+
+		if (articuloConferencia.getOrganizacionCorrespondiente() != null) {
+			articuloConferenciaSGI
+					.setIdorganizacionCorrespondiente(articuloConferencia.getOrganizacionCorrespondiente().getId());
+		}
+
+		if (articuloConferencia.getTieneColeccionDePublicacion() != null) {
+			articuloConferenciaSGI
+					.setIdtieneColeccionDePublicacion(articuloConferencia.getTieneColeccionDePublicacion().getId());
+		}
+
+		if (articuloConferencia.getTieneLibroDePublicacion() != null) {
+			articuloConferenciaSGI
+					.setIdtieneLibroDePublicacion(articuloConferencia.getTieneLibroDePublicacion().getId());
+		}
+
+		if (articuloConferencia.getPresentadoEnConferencia() != null) {
+			articuloConferenciaSGI
+					.setIdpresentadoEnConferencia(articuloConferencia.getPresentadoEnConferencia().getId());
+		}
+
+		return articuloConferenciaSGI;
+	}
+
+	// UTIL
 	private static Date xmlGregorianCalendarToDate(XMLGregorianCalendar xcal) {
 		if (xcal == null) {
 			return null;

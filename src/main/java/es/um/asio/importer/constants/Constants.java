@@ -30,4 +30,10 @@ public final class Constants {
 
 	public static final String ACTIVIDAD = "Actividad";
 
+	public static final String ACTUACION = "Actuacion";
+
+	public static final String ARTICULO = "Articulo";
+
+	public static final String ARTICULO_CONFERENCIA = "ArticuloConferencia";
+
 }

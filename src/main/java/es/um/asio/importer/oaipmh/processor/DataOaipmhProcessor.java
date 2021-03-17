@@ -25,7 +25,11 @@ import es.um.asio.importer.oaipmh.model.HeaderType;
 import es.um.asio.importer.oaipmh.model.OAIPMHtype;
 import es.um.asio.importer.oaipmh.model.SetType;
 import es.um.asio.importer.oaipmh.processor.mappings.ActaMapping;
+import es.um.asio.importer.oaipmh.processor.mappings.ActividadMapping;
+import es.um.asio.importer.oaipmh.processor.mappings.ActuacionMapping;
 import es.um.asio.importer.oaipmh.processor.mappings.ArticuloAcademicoMapping;
+import es.um.asio.importer.oaipmh.processor.mappings.ArticuloConferenciaMapping;
+import es.um.asio.importer.oaipmh.processor.mappings.ArticuloMapping;
 import es.um.asio.importer.oaipmh.writer.OaipmhWriter;
 
 public class DataOaipmhProcessor implements Tasklet {
@@ -190,13 +194,31 @@ public class DataOaipmhProcessor implements Tasklet {
 			break;
 
 		case Constants.ACTIVIDAD:
-			listObjects = ActaMapping.mappingActas(bodyXML, jobExecutionId, this.mapper);
+			listObjects = ActividadMapping.mappingActividad(bodyXML, jobExecutionId, this.mapper);
+			if (listObjects != null && listObjects.size() != 0)
+				list.addAll(listObjects);
+			break;
+
+		case Constants.ACTUACION:
+			listObjects = ActuacionMapping.mappingActuacion(bodyXML, jobExecutionId, this.mapper);
+			if (listObjects != null && listObjects.size() != 0)
+				list.addAll(listObjects);
+			break;
+
+		case Constants.ARTICULO:
+			listObjects = ArticuloMapping.mappingArticulo(bodyXML, jobExecutionId, this.mapper);
 			if (listObjects != null && listObjects.size() != 0)
 				list.addAll(listObjects);
 			break;
 
 		case Constants.ARTICULO_ACADEMICO:
 			listObjects = ArticuloAcademicoMapping.mappingArticuloAcademico(bodyXML, jobExecutionId, this.mapper);
+			if (listObjects != null && listObjects.size() != 0)
+				list.addAll(listObjects);
+			break;
+
+		case Constants.ARTICULO_CONFERENCIA:
+			listObjects = ArticuloConferenciaMapping.mappingArticuloConferencia(bodyXML, jobExecutionId, this.mapper);
 			if (listObjects != null && listObjects.size() != 0)
 				list.addAll(listObjects);
 			break;
