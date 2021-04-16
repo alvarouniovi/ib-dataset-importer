@@ -9,8 +9,8 @@
 | Módulo         | Importador base                                              |
 | Tipo           | Software                                                     |
 | Objetivo       | Importador de datos del DataSet de Murcia para el proyecto Backend SGI (ASIO). |
-| Estado         | **70%** Está completado al 100% con los datos y servicios de los que disponemos actualmente importando XML.<br /><br />El importador para los servicios con el protocolo OIA-PMH está creado y funciona. |
-| Próximos pasos | Hacer las modificaciones necesarias para actualizarlo con los nuevos servicios que se desarrollarán con el protocolo OAI-PMH y con las actualizaciones necesarias para actualizar y borrar datasets.<br />Actualizar los datos importados según se hayan actualizado y añadir los datos pendientes. |
+| Estado         | **100%**  |
+| Próximos pasos |  |
 | Documentación  | [Manual de usuario](https://github.com/HerculesCRUE/ib-asio-docs-/blob/master/00-An%C3%A1lisis/Manual%20de%20usuario/Manual%20de%20usuario.md)<br />[Manual de despliegue](https://github.com/HerculesCRUE/ib-asio-composeset/blob/master/README.md)<br />[Documentación técnica](https://github.com/HerculesCRUE/ib-asio-docs-/blob/master/00-Arquitectura/arquitectura_semantica/documento_arquitectura/ASIO_Izertis_Arquitectura.md) |
 
 # ASIO - Importador de datos del DataSet de Murcia
