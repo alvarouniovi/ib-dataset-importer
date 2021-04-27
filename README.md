@@ -2,14 +2,15 @@
 
 
 
-| Entregable     | Importador de datos del DataSet de Murcia, SGI y CVN                    |
+| Entregable     | Importador de datos del DataSet de Murcia, SGI y CVN         |
 | -------------- | ------------------------------------------------------------ |
-| Fecha          | 17/12/2020                                                   |
+| Fecha          | 27/04/2021                                                   |
+| Revisado por   | Paloma Terán Pérez                                           |
 | Proyecto       | [ASIO](https://www.um.es/web/hercules/proyectos/asio) (Arquitectura Semántica e Infraestructura Ontológica) en el marco de la iniciativa [Hércules](https://www.um.es/web/hercules/) para la Semántica de Datos de Investigación de Universidades que forma parte de [CRUE-TIC](https://www.crue.org/proyecto/hercules/) |
 | Módulo         | Importador base                                              |
 | Tipo           | Software                                                     |
 | Objetivo       | Importador de datos del DataSet de Murcia, SGI y CVN para el proyecto Backend SGI (ASIO). |
-| Estado         | **90%** Está completado al 100% con los datos y servicios de los que disponemos actualmente importando XML.<br /><br />El importador para los servicios con el protocolo OIA-PMH está creado y funciona. |
+| Estado         | **100%** Está completado al 100% con los datos y servicios de los que disponemos actualmente importando XML.<br /><br />El importador para los servicios con el protocolo OIA-PMH está creado y funciona. |
 | Próximos pasos | Hacer las modificaciones necesarias para actualizarlo con los nuevos servicios que se desarrollarán con el protocolo CERIF y con las actualizaciones necesarias para actualizar y borrar datasets.<br />Actualizar los datos importados según se hayan actualizado y añadir los datos pendientes. |
 | Documentación  | [Manual de usuario](https://github.com/HerculesCRUE/ib-asio-docs-/blob/master/00-An%C3%A1lisis/Manual%20de%20usuario/Manual%20de%20usuario.md)<br />[Manual de despliegue](https://github.com/HerculesCRUE/ib-asio-composeset/blob/master/README.md)<br />[Documentación técnica](https://github.com/HerculesCRUE/ib-asio-docs-/blob/master/00-Arquitectura/arquitectura_semantica/documento_arquitectura/ASIO_Izertis_Arquitectura.md) |
 
@@ -136,7 +137,7 @@ Será preciso configurar las siguientes variables de entorno cuando se instale e
 
 Se incluyen los resultados del testing y cobertura en los siguientes enlaces:
 
-* [Testing](http://herc-iz-front-desa.atica.um.es:8070/dataset-importer/surefire/surefire-report.html)
+* [Testing](https://reports.herculesasioizertis.desa.um.es/dataset-importer/surefire/surefire-report.html)
 * [Cobertura](https://sonarcloud.io/component_measures?id=HerculesCRUE_ib-dataset-importer&metric=coverage&view=list)
 
 ##  Documentación adicional
