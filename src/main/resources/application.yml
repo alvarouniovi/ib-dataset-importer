@@ -11,7 +11,7 @@ app:
     input-topic-name: input-data
     create-topics: false
   data:
-    path:
+    path: C:\desarrollo\java\Murcia\DataSetsDemo\dataset
   services:    
     cvn:
       mockup:
@@ -23,11 +23,17 @@ app:
       mockup:
         enabled: true    
       endpoint: http://localhost:9322
-      endpoint-import-search: ${app.services.input-processor.endpoint}/import-result/search
-
+      endpoint-import-search: ${app.services.input-processor.endpoint}/import-result/search      
+# SGI  
+    oai:      
+      endpoint: http://herc-as-front-desa.atica.um.es/oai-pmh-xml/OAI_PMH
+      endpoint-list: ${app.services.oai.endpoint}?verb=ListSets
+      endpoint-xml: ${app.services.oai.endpoint}?verb=GetRecord&metadataPrefix=XML_ASIO&identifier=
+      endpoint-ids: ${app.services.oai.endpoint}?verb=ListIdentifiers&metadataPrefix=XML_ASIO&set=
+      
 # Spring configuration
 spring:
-  batch:
+  batch:    
     initialize-schema: never
     # Dont launch jobs automatically
     # job:

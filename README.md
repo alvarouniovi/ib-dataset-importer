@@ -2,9 +2,10 @@
 
 
 
-| Entregable     | Importador de datos del DataSet de Murcia                    |
+| Entregable     | Importador de datos del DataSet de Murcia, SGI y CVN         |
 | -------------- | ------------------------------------------------------------ |
-| Fecha          | 17/12/2020                                                   |
+| Fecha          | 27/04/2021                                                   |
+| Revisado por   | Paloma Terán Pérez                                           |
 | Proyecto       | [ASIO](https://www.um.es/web/hercules/proyectos/asio) (Arquitectura Semántica e Infraestructura Ontológica) en el marco de la iniciativa [Hércules](https://www.um.es/web/hercules/) para la Semántica de Datos de Investigación de Universidades que forma parte de [CRUE-TIC](https://www.crue.org/proyecto/hercules/) |
 | Módulo         | Importador base                                              |
 | Tipo           | Software                                                     |
@@ -13,14 +14,14 @@
 | Próximos pasos |  |
 | Documentación  | [Manual de usuario](https://github.com/HerculesCRUE/ib-asio-docs-/blob/master/00-An%C3%A1lisis/Manual%20de%20usuario/Manual%20de%20usuario.md)<br />[Manual de despliegue](https://github.com/HerculesCRUE/ib-asio-composeset/blob/master/README.md)<br />[Documentación técnica](https://github.com/HerculesCRUE/ib-asio-docs-/blob/master/00-Arquitectura/arquitectura_semantica/documento_arquitectura/ASIO_Izertis_Arquitectura.md) |
 
-# ASIO - Importador de datos del DataSet de Murcia
+# ASIO - Importador de datos del DataSet de Murcia, SGI y CVN
 
 |     | Master |
 | --- | ------ |
 | Quality Gate | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=HerculesCRUE_ib-dataset-importer&metric=alert_status)](https://sonarcloud.io/dashboard?id=HerculesCRUE_ib-dataset-importer) |
 | Coverage | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=HerculesCRUE_ib-dataset-importer&metric=coverage)](https://sonarcloud.io/dashboard?id=HerculesCRUE_ib-dataset-importer) |
 
-Importador de datos del DataSet de Murcia para el proyecto Backend SGI (ASIO). Se trata de un proceso batch configurado mediante Spring Batch.
+Importador de datos del DataSet de Murcia, SGI y CVN para el proyecto Backend SGI (ASIO). Se trata de un proceso batch configurado mediante Spring Batch.
 
 ## OnBoarding
 
@@ -59,8 +60,9 @@ docker-compose down
 
 Se han configurado los siguientes Jobs:
 
-- `importDataSetJob`: job encargado de procesar datos a partir de los XML del dataset
-- `importCvnJob`: job encargado de procesar CVN a partir de los servicios web
+- `importDataSetJob`: job encargado de procesar datos a partir de la lectura de ficheros XML del dataset de Murcia.
+- `importCvnJob`: job encargado de procesar CVN a partir de los servicios web propios de CVN
+- `importOaipmhJob`: job encargado de procesar SGI (OAIPMH) a partir de los servicios web propios de SGI
 
 Estos jobs se encargan de leer los datos correspondientes, generar un JSON con los datos y posteriormente insertarlo en un topic de Kafka.
 
@@ -73,6 +75,13 @@ Estos jobs se encargan de leer los datos correspondientes, generar un JSON con l
 * `app.services.cvn.mockup.enabled`: Booleano para indicar si se utilizan servicios mock para obtener los CVN. Valor por defecto: true
 * `app.services.input-processor.endpoint`: Dirección del servidor para obtener los datos de importaciones anteriores. Valor por defecto: localhost:9322
 * `app.services.input-processor.mockup.enabled`: Booleano para indicar si se utilizan servicios mock para obtener los resultados de las importaciones anteriores. Valor por defecto: true
+* `app.services.oai.endpoint`: Dirección base del servidor de SGI. Valor por defecto: http://herc-as-front-desa.atica.um.es/oai-pmh-xml/OAI_PMH
+* `app.services.oai.endpoint-list`: Dirección del servicio de SGI para obtener el listado de Specs. Valor por defecto: ${app.services.oai.endpoint}?verb=ListSets
+* `app.services.oai.endpoint-xml`: Dirección del servicio de SGI para obtener el XML mediante un ID. Valor por defecto: ${app.services.oai.endpoint}?verb=GetRecord&metadataPrefix=XML_ASIO&identifier=
+* `app.services.oai.endpoint-ids`: Dirección del servicio de SGI para obtener el listado de IDs de una SPEC. Valor por defecto: ${app.services.oai.endpoint}?verb=ListIdentifiers&metadataPrefix=XML_ASIO&set=
+
+
+
 
 ## Cómo crear un nuevo Job
 
@@ -117,13 +126,18 @@ Será preciso configurar las siguientes variables de entorno cuando se instale e
 |`APP_SERVICES_CVN_ENDPOINT`| URL del servicio para obtener CVN | http://curriculumpruebas.um.es/curriculum/rest/v1/auth |
 |`APP_SERVICES_CVN_MOCKUP_ENABLED`| Indica si se deben utilizar servicios mock para obtener los CVN. Valores admisibles: `true` y `false` | true |
 |`APP_SERVICES_INPUTPROCESSOR_ENDPOINT`| URL del servicio para obtener datos de importaciones anteriores | localhost:9322 |
-|`APP_SERVICES_INPUTPROCESSOR_MOCKUP_ENABLED`| Indica si se deben utilizar servicios mock para obtener datos de importaciones anteriores. Valores admisibles: `true` y `false` | true |
+|`APP_SERVICES_INPUTPROCESSOR_MOCKUP_ENABLED`| Indica si se deben utilizar servicios mock para obtener datos de importaciones anteriores. Valores admisibles: `true` y `false` | true | |
+|`APP_SERVICES_OAI_ENDPOINT`| Dirección base del servidor de SGI. Valor por defecto| http://herc-as-front-desa.atica.um.es/oai-pmh-xml/OAI_PMH | |
+|`APP_SERVICES_OAI_ENDPOINT_LIST`| Dirección del servicio de SGI para obtener el listado de Specs. Valor por defecto | ${app.services.oai.endpoint}?verb=ListSets | |
+|`APP_SERVICES_OAI_ENDPOINT_XML`| Dirección del servicio de SGI para obtener el XML mediante un ID. Valor por defecto | ${app.services.oai.endpoint}?verb=GetRecord&metadataPrefix=XML_ASIO&identifier= | |
+|`APP_SERVICES_OAI_ENDPOINT_IDS`| Dirección del servicio de SGI para obtener el listado de IDs de una SPEC. Valor por defecto | ${app.services.oai.endpoint}?verb=ListIdentifiers&metadataPrefix=XML_ASIO&set= | |
+
 
 ## Testing y cobertura
 
 Se incluyen los resultados del testing y cobertura en los siguientes enlaces:
 
-* [Testing](http://herc-iz-front-desa.atica.um.es:8070/dataset-importer/surefire/surefire-report.html)
+* [Testing](https://reports.herculesasioizertis.desa.um.es/dataset-importer/surefire/surefire-report.html)
 * [Cobertura](https://sonarcloud.io/component_measures?id=HerculesCRUE_ib-dataset-importer&metric=coverage&view=list)
 
 ##  Documentación adicional
