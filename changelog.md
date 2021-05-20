@@ -1,5 +1,5 @@
 # Registro de cambios
 
-## 2.2.6
+## 2.0-SNAPSHOT (19/05/2021)
 
-- Añadido el nuevo Job de importación de datos SGI Oaimph
+- Añadidos los servicios y procesos para la gestión de datos Oaipmh SGI.
