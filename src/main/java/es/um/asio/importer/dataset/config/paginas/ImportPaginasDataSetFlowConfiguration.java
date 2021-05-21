@@ -85,7 +85,7 @@ public class ImportPaginasDataSetFlowConfiguration extends ImportDataSetFlowConf
                 .next(createStep(AutorCapituloLibro.class,"Paginas/Autores captitulos libros.xml"))
                 .next(createStep(AutorCongreso.class,"Paginas/Autores congresos.xml"))
                 .next(createStep(AutorDiseno.class,"Paginas/Autores diseños.xml"))
-                .next(createStep(AutorExposicion.class,"Paginas/Autores exposicion.xml"))
+                .next(createStep(AutorExposicion.class,"Paginas/Autores exposiciones.xml"))
                 .next(createStep(AutorLibro.class,"Paginas/Autores libros.xml"))
                 .next(createStep(AutorPrologoLibro.class,"Paginas/Autores prologo libros.xml"))
                 .next(createStep(AyudaIniciacion.class,"Paginas/Ayudas iniciacion.xml"))

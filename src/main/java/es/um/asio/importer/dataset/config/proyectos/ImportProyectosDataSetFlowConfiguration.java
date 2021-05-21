@@ -12,6 +12,7 @@ import es.um.asio.domain.proyectos.EquipoProyecto;
 import es.um.asio.domain.proyectos.FacturaEmitirProyecto;
 import es.um.asio.domain.proyectos.FacturaProyecto;
 import es.um.asio.domain.proyectos.FechaProyecto;
+import es.um.asio.domain.proyectos.FechasEquiposProyectos;
 import es.um.asio.domain.proyectos.FinanciacionProyecto;
 import es.um.asio.domain.proyectos.GastoPrevistoProyecto;
 import es.um.asio.domain.proyectos.GastoProyecto;
@@ -64,7 +65,8 @@ public class ImportProyectosDataSetFlowConfiguration extends ImportDataSetFlowCo
                 .next(createStep(EquipoProyecto.class,"dataset/Proyectos/Equipos proyectos.xml"))
                 .next(createStep(FacturaEmitirProyecto.class,"dataset/Proyectos/Facturas emitir proyectos.xml"))      
                 .next(createStep(FacturaProyecto.class,"dataset/Proyectos/Facturas proyectos.xml"))      
-                .next(createStep(FechaProyecto.class,"dataset/Proyectos/Fechas proyectos.xml"))      
+                .next(createStep(FechaProyecto.class,"dataset/Proyectos/Fechas proyectos.xml"))
+                .next(createStep(FechasEquiposProyectos.class,"dataset/Proyectos/Fechas equipos proyectos.xml"))
                 .next(createStep(FinanciacionProyecto.class,"dataset/Proyectos/Financiacion proyectos.xml"))      
                 .next(createStep(GastoPrevistoProyecto.class,"dataset/Proyectos/Gastos previstos proyectos.xml"))      
                 .next(createStep(GastoProyecto.class,"dataset/Proyectos/Gastos proyectos.xml"))      

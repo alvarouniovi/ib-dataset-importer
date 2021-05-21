@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 import es.um.asio.domain.centros.Centro;
 import es.um.asio.domain.centros.Departamento;
-import es.um.asio.domain.centros.FechasEquiposProyectos;
 import es.um.asio.importer.dataset.config.ImportDataSetFlowConfigurationBase;
 
 /**
@@ -36,7 +35,6 @@ public class ImportCentrosDataSetFlowConfiguration extends ImportDataSetFlowConf
         return new FlowBuilder<SimpleFlow>(getFlowName())
                 .start(createStep(Centro.class,"dataset/Centros/Centros.xml"))                
                 .next(createStep(Departamento.class,"dataset/Centros/Departamentos.xml"))
-                .next(createStep(FechasEquiposProyectos.class,"dataset/Centros/Fechas equipos proyectos.xml"))
                 .build();         
     }
 }
