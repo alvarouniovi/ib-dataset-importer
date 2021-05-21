@@ -13,7 +13,7 @@
 
 	<groupId>es.um.asio</groupId>
 	<artifactId>dataset-importer</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>2.0-SNAPSHOT</version>
 	<name>UM - ASIO - dataset-importer</name>
 	<description>UM - ASIO - dataset-importer</description>
 	<url>https://www.um.es/web/hercules/</url>
