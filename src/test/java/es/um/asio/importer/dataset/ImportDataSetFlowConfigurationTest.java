@@ -94,7 +94,6 @@ public class ImportDataSetFlowConfigurationTest {
         int personasElementsCount = 1;
         int totalElementsCount = datasetElementsCount + goliatElementsCount + paginasElementsCount + personasElementsCount;
         
-        // verify(kafkaTemplate, times(totalElementsCount)).send(anyString(), argThat(inputData -> !(inputData.getData() instanceof ImportResult)));
         verify(kafkaTemplate, times(totalElementsCount)).send(anyString(), argThat(inputData -> !(inputData.getData() instanceof ImportResult))); 
 
     } 
