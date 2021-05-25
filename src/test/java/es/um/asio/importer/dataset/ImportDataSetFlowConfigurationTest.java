@@ -88,6 +88,8 @@ public class ImportDataSetFlowConfigurationTest {
     
     @Test
     public void whenJobExecuted_thenSentAllXmlDataToKafka() {
+    	//One data for xml, except in projects, projects are 3
+    	// Actividades + Ayudas + Centros + Contratos + Grupos de investigación + Patentes + Proyectos (Proyectos.xml are 3) + Recursos humanos
         int datasetElementsCount = 6 + 21 + 2 + 9 + 6 + 7 + 30 + 11;
         int goliatElementsCount = 6;
         int paginasElementsCount = 48;
