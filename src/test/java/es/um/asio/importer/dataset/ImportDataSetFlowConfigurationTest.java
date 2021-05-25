@@ -88,13 +88,15 @@ public class ImportDataSetFlowConfigurationTest {
     
     @Test
     public void whenJobExecuted_thenSentAllXmlDataToKafka() {
-        int datasetElementsCount = 90;
+        int datasetElementsCount = 6 + 21 + 2 + 9 + 6 + 7 + 30 + 11;
         int goliatElementsCount = 6;
-        int paginasElementsCount = 51;
+        int paginasElementsCount = 48;
         int personasElementsCount = 1;
         int totalElementsCount = datasetElementsCount + goliatElementsCount + paginasElementsCount + personasElementsCount;
         
+        // verify(kafkaTemplate, times(totalElementsCount)).send(anyString(), argThat(inputData -> !(inputData.getData() instanceof ImportResult)));
         verify(kafkaTemplate, times(totalElementsCount)).send(anyString(), argThat(inputData -> !(inputData.getData() instanceof ImportResult))); 
+
     } 
     
     @Test
