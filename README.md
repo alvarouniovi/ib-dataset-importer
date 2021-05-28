@@ -133,6 +133,13 @@ Será preciso configurar las siguientes variables de entorno cuando se instale e
 |`APP_SERVICES_OAI_ENDPOINT_IDS`| Dirección del servicio de SGI para obtener el listado de IDs de una SPEC. Valor por defecto | ${app.services.oai.endpoint}?verb=ListIdentifiers&metadataPrefix=XML_ASIO&set= | |
 
 
+
+## Manual para importar datos
+
+Se debe consultar el [Manual para lanzar el importador](./Manual_para_lanzar_el_importador.md) para más información.
+
+
+
 ## Testing y cobertura
 
 Se incluyen los resultados del testing y cobertura en los siguientes enlaces:
