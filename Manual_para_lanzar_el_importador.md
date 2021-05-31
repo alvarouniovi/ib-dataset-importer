@@ -1,3 +1,17 @@
+![](./images/logos_feder.png)
+
+
+
+| Entregable     | Manual ejecución de importadores        |
+| -------------- | ------------------------------------------------------------ |
+| Fecha          | 27/05/2021                                                   |
+| Revisado por   | Paloma Terán Pérez                                           |
+| Proyecto       | [ASIO](https://www.um.es/web/hercules/proyectos/asio) (Arquitectura Semántica e Infraestructura Ontológica) en el marco de la iniciativa [Hércules](https://www.um.es/web/hercules/) para la Semántica de Datos de Investigación de Universidades que forma parte de [CRUE-TIC](https://www.crue.org/proyecto/hercules/) |
+| Módulo         | Importador base                                              |
+| Tipo           | Software                                                     |
+| Objetivo       | Manual ejecución importadores. |
+| Estado         | **100%**  |
+
 # Manual para lanzar el importador
 
 
