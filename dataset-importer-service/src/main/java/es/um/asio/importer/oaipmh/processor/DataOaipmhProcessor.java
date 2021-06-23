@@ -51,21 +51,21 @@ public class DataOaipmhProcessor implements Tasklet {
 
 	@Autowired
 	private OaipmhBeansMapper mapper;
-
-	@Value("${app.data.path}")
-	private String dataPath;
-
+    
+    @Value("${app.services.oai.endpoint}")
+    public String oaiEndpoint; 
+	
 	/** The SGI factory endpoint. */
 	@Value("${app.services.oai.endpoint-list}")
-	private String uriFactoryEndpointList;
+	private String uriFactoryListContext;
 
 	/** The SGI factory endpoint. */
 	@Value("${app.services.oai.endpoint-ids}")
-	private String uriFactoryEndpointIds;
+	private String uriFactoryIdsContext;
 
 	/** The uri factory endpoint. */
 	@Value("${app.services.oai.endpoint-xml}")
-	private String uriFactoryEndpointXml;
+	private String uriFactoryXmlContext;
 
 	/**
 	 * @inheritDoc
@@ -84,7 +84,7 @@ public class DataOaipmhProcessor implements Tasklet {
 
 		try {
 			restTemplate = new RestTemplate();
-			ResponseEntity<OAIPMHtype> response = restTemplate.getForEntity(uriFactoryEndpointList, OAIPMHtype.class);
+			ResponseEntity<OAIPMHtype> response = restTemplate.getForEntity(oaiEndpoint.concat(uriFactoryListContext), OAIPMHtype.class);
 
 			if (response != null) {
 
@@ -96,7 +96,7 @@ public class DataOaipmhProcessor implements Tasklet {
 						for (SetType set : response.getBody().getListSets().getSet()) {
 							try {
 
-								responseIds = restTemplate.getForEntity(uriFactoryEndpointIds.concat(set.getSetSpec()),
+								responseIds = restTemplate.getForEntity(oaiEndpoint.concat(uriFactoryIdsContext).concat(set.getSetSpec()),
 										OAIPMHtype.class);
 
 								if (responseIds != null) {
@@ -106,7 +106,7 @@ public class DataOaipmhProcessor implements Tasklet {
 
 										if (bodyIds.getError() != null && bodyIds.getError().size() != 0) {
 											logger.debug(bodyIds.getError().get(0).getValue() + " - URL: "
-													+ uriFactoryEndpointIds.concat(set.getSetSpec()));
+													+ oaiEndpoint.concat(uriFactoryIdsContext).concat(set.getSetSpec()));
 										} else if (bodyIds.getListIdentifiers() != null
 												&& bodyIds.getListIdentifiers().getHeader() != null) {
 
@@ -116,7 +116,7 @@ public class DataOaipmhProcessor implements Tasklet {
 														"Spec: " + set.getSetSpec() + ", ID: " + setID.getIdentifier());
 												try {
 													responseXml = restTemplate.getForEntity(
-															uriFactoryEndpointXml.concat(setID.getIdentifier()),
+															oaiEndpoint.concat(uriFactoryXmlContext).concat(setID.getIdentifier()),
 															OAIPMHtype.class);
 
 													if (responseXml != null) {
@@ -126,7 +126,7 @@ public class DataOaipmhProcessor implements Tasklet {
 															if (bodyXML.getError() != null
 																	&& bodyXML.getError().size() != 0) {
 																logger.debug(bodyXML.getError().get(0).getValue()
-																		+ " - URL: " + uriFactoryEndpointXml
+																		+ " - URL: " + oaiEndpoint.concat(uriFactoryXmlContext)
 																				.concat(setID.getIdentifier()));
 															} else if (bodyXML != null) {
 
@@ -226,4 +226,7 @@ public class DataOaipmhProcessor implements Tasklet {
 
 	}
 
+	public void setOaiEndpoint(String oaiEndpoint) {
+		this.oaiEndpoint = oaiEndpoint;
+	}
 }

@@ -4,14 +4,18 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import es.um.asio.domain.DataSetData;
 import es.um.asio.importer.config.persistence.properties.DatasourceProperties;
 import es.um.asio.importer.config.persistence.properties.PersistenceProperties;
 
@@ -20,6 +24,9 @@ import es.um.asio.importer.config.persistence.properties.PersistenceProperties;
  */
 @Configuration
 @EnableConfigurationProperties(PersistenceProperties.class)
+@EnableJpaRepositories("es.um.asio.importer.repository")
+@EnableTransactionManagement
+@EntityScan("es.um.asio.domain.importer")
 public class PersistenceConfig {
 
     /**

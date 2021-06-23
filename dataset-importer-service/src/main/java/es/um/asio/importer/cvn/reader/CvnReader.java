@@ -7,6 +7,8 @@ import java.util.Queue;
 
 import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import es.um.asio.importer.cvn.model.CvnChanges;
 import es.um.asio.importer.cvn.model.beans.CvnRootBean;
 import es.um.asio.importer.cvn.service.CvnImportInfoService;
@@ -59,10 +61,11 @@ public class CvnReader implements ItemReader<CvnRootBean> {
      * Fetch cvn changes.
      */
     private void fetchCvnChanges(){
-        Date dateFrom = cvnImportInfoService.findDateOfLastImport();
-        cvnsIdsChanges = new LinkedList<>();
+        //Date dateFrom = cvnImportInfoService.findDateOfLastImport();
+        Date dateFrom = new Date();       
         CvnChanges cvnChanges = cvnService.findAllChangesByDate(dateFrom);
         if(cvnChanges!=null && cvnChanges.getIds()!=null && cvnChanges.getIds().length > 0) {
+        	cvnsIdsChanges = new LinkedList<>();
             cvnsIdsChanges.addAll(Arrays.asList(cvnChanges.getIds()));
         }
     }
@@ -77,7 +80,9 @@ public class CvnReader implements ItemReader<CvnRootBean> {
         Long cvnId = cvnsIdsChanges.poll();
         if(cvnId != null) {
             cvn = cvnService.findById(cvnId);
-        }     
+        } else {
+        	cvnsIdsChanges = null;
+        }
         return cvn;
     }
 

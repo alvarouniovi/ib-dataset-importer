@@ -25,4 +25,6 @@ public interface CvnService {
      * @return the cvn
      */
     CvnRootBean findById(Long id);
+    
+    default void setUrl(String url){};
 }

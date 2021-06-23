@@ -30,21 +30,21 @@ app:
   services:    
     cvn:
       mockup:
-        enabled: true    
+        enabled: false    
       endpoint: http://curriculumpruebas.um.es/curriculum/rest/v1/auth
-      endpoint-cvn: ${app.services.cvn.endpoint}/cvn
-      endpoint-changes: ${app.services.cvn.endpoint}/changes
+      endpoint-cvn: /cvn
+      endpoint-changes: /changes
     input-processor:
       mockup:
-        enabled: true    
+        enabled: false    
       endpoint: http://localhost:9322
       endpoint-import-search: ${app.services.input-processor.endpoint}/import-result/search      
 # SGI  
     oai:      
       endpoint: http://herc-as-front-desa.atica.um.es/oai-pmh-xml/OAI_PMH
-      endpoint-list: ${app.services.oai.endpoint}?verb=ListSets
-      endpoint-xml: ${app.services.oai.endpoint}?verb=GetRecord&metadataPrefix=XML_ASIO&identifier=
-      endpoint-ids: ${app.services.oai.endpoint}?verb=ListIdentifiers&metadataPrefix=XML_ASIO&set=
+      endpoint-list: ?verb=ListSets
+      endpoint-xml: ?verb=GetRecord&metadataPrefix=XML_ASIO&identifier=
+      endpoint-ids: ?verb=ListIdentifiers&metadataPrefix=XML_ASIO&set=
       
 # Spring configuration
 spring:

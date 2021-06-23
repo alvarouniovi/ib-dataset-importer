@@ -42,13 +42,16 @@ public class CvnServiceImpl implements CvnService {
      * The rest template. 
      * */
     @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate;    
+    
+    @Value("${app.services.cvn.endpoint}")
+    public String cvnEndpoint; 
+    
+    @Value("${app.services.cvn.endpoint-cvn}")
+    private String cvnEndpointContext;
     
     @Value("${app.services.cvn.endpoint-changes}")
-    private String endPointChanges;
- 
-    @Value("${app.services.cvn.endpoint-cvn}")
-    private String endPointCvn;
+    private String changeEndpointContext; 
   
     /**
      * {@inheritDoc}
@@ -56,7 +59,7 @@ public class CvnServiceImpl implements CvnService {
     @Override
     @Retryable(value = { CvnChangesRequestException.class }, maxAttempts = 3, backoff = @Backoff(delay = 3000) )
     public CvnChanges findAllChangesByDate(Date from) {      
-        String uri = endPointChanges;
+		String uri = cvnEndpoint.concat(changeEndpointContext);
         if(from != null) {
             String dateFormatted = new SimpleDateFormat("yyyy-MM-dd").format(from);
             uri = uri + "?date=" + dateFormatted;
@@ -77,7 +80,7 @@ public class CvnServiceImpl implements CvnService {
     @Override
     @Retryable(value = { CvnRequestException.class }, maxAttempts = 3, backoff = @Backoff(delay = 3000) )
     public CvnRootBean findById(Long id) {
-        String uri = endPointCvn + "?id=" + id.toString();
+		String uri = cvnEndpoint.concat(cvnEndpointContext).concat("?id=" + id.toString());
         ResponseExtractor<CvnRootBean> cvnResponseExtractor =  new CvnResponseExtractor(restTemplate.getMessageConverters());
         
         try {
@@ -88,7 +91,14 @@ public class CvnServiceImpl implements CvnService {
         }
     }
     
-    /**
+    
+    
+    @Override
+	public void setUrl(String url) {
+		this.cvnEndpoint = url;
+	}
+
+	/**
      * Gets the headers from cvn service.
      *
      * @return the headers
@@ -98,6 +108,5 @@ public class CvnServiceImpl implements CvnService {
         headers.set("application", "asio");   
         headers.set("key", "asiokey");      
         return headers;
-    }
-    
+    }          
  }
