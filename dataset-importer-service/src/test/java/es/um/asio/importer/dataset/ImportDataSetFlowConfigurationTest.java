@@ -16,6 +16,7 @@ import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockReset;
@@ -30,6 +31,7 @@ import es.um.asio.domain.DataSetData;
 import es.um.asio.domain.InputData;
 import es.um.asio.domain.importResult.ImportResult;
 import es.um.asio.domain.proyectos.Proyecto;
+import es.um.asio.importer.config.ImportProperties;
 import es.um.asio.importer.constants.Constants;
 import es.um.asio.importer.dataset.config.ImportDataSetJobConfiguration;
 import es.um.asio.importer.listener.JobCompletionNotificationListener;
@@ -47,9 +49,15 @@ public class ImportDataSetFlowConfigurationTest {
             return new JobLauncherTestUtils();
         }
         @Bean
+        @Qualifier("JobCompletionNotificationListener")
         JobExecutionListener jobExecutionListener() {
             return new JobCompletionNotificationListener();
         }
+        
+        @Bean
+    	ImportProperties importProperties() {
+    		return new ImportProperties();
+    	}
     }
     
     private static boolean initialized = false;

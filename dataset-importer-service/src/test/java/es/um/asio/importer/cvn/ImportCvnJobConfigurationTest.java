@@ -18,6 +18,7 @@ import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -57,6 +58,7 @@ public class ImportCvnJobConfigurationTest {
             return new JobLauncherTestUtils();
         }
         @Bean
+        @Qualifier("CvnJobExecutorListener")
         JobExecutionListener jobExecutionListener() {
             return new JobCompletionNotificationListener();
         }

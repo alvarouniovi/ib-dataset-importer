@@ -10,6 +10,7 @@ import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.job.flow.support.SimpleFlow;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -31,11 +32,11 @@ public class ImportDataSetJobConfiguration {
      * @return the job
      */
     @Bean
-    public Job importDataSetJob(final JobBuilderFactory jobs, final JobExecutionListener listener,
+    public Job importDataSetJob(final JobBuilderFactory jobs, @Qualifier("JobCompletionNotificationListener") final JobExecutionListener listener,
             final List<ImportDataSetFlowConfigurationBase> flows) {  
         return jobs.get(Constants.DATASET_JOB_NAME)
                 .incrementer(new RunIdIncrementer()).listener(listener)
-                .start(importDataSetSplitFlow(flows.stream().map(ImportDataSetFlowConfigurationBase::getFlow).collect(Collectors.toList()).toArray(new Flow[0])))
+                .start(importDataSetSplitFlow(flows.stream().map(ImportDataSetFlowConfigurationBase::getFlow).collect(Collectors.toList()).toArray(new Flow[0])))               
                 .build().build();
     }    
    

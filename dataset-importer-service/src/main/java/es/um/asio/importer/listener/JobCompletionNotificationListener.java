@@ -6,6 +6,7 @@ import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import es.um.asio.importer.util.ImportResultUtil;
  * to Kafka topic.
  */
 @Component
+@Qualifier("JobCompletionNotificationListener")
 public class JobCompletionNotificationListener extends JobExecutionListenerSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(JobCompletionNotificationListener.class);

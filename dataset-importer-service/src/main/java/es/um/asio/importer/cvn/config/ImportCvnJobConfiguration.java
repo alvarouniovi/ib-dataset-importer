@@ -39,7 +39,7 @@ public class ImportCvnJobConfiguration {
 	 */
 	@Bean
 	public Job importCvnJob(final JobBuilderFactory jobs, @Qualifier("CvnStep") final Step s1,
-			final JobExecutionListener listener) {
+			@Qualifier("CvnJobExecutorListener") final JobExecutionListener listener) {
 
 		return jobs.get(Constants.CVN_JOB_NAME).incrementer(new RunIdIncrementer()).listener(listener).start(s1)
 				.build();
@@ -78,6 +78,7 @@ public class ImportCvnJobConfiguration {
 	 * @return the processor
 	 */
 	@Bean
+	@Qualifier("CvnReader")
 	protected ItemReader<CvnRootBean> getReader() {
 		return new CvnReader();
 	}

@@ -7,6 +7,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,7 +22,7 @@ public class ImportOaipmhJobConfiguration {
 
 	// Configure job step
 	@Bean(name = Constants.OAIPMH_JOB_NAME)
-	public Job importOaipmhJob(@Autowired JobBuilderFactory jobBuilderFactory, final JobExecutionListener listener,
+	public Job importOaipmhJob(@Autowired JobBuilderFactory jobBuilderFactory, @Qualifier("JobCompletionNotificationListener") final JobExecutionListener listener,
 			@Autowired StepBuilderFactory stepBuilderFactory) {
 
 		Job job = jobBuilderFactory.get(Constants.OAIPMH_JOB_NAME).incrementer(new RunIdIncrementer())
