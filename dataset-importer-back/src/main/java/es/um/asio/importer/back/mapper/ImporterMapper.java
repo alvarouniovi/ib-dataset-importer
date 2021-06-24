@@ -1,21 +1,18 @@
 package es.um.asio.importer.back.mapper;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import es.um.asio.domain.importer.ImporterSchedule;
 import es.um.asio.importer.back.dto.DataImporterDTO;
+import es.um.asio.importer.back.dto.ImportExecutionDTO;
 import es.um.asio.importer.constants.Constants;
+import es.um.asio.importer.dto.ImportExecutionVO;
 
 @Component
 public class ImporterMapper {
-	
-    @Value("${app.data.path}")
-    private String dataPath;
 	
 	public ImporterSchedule mapDataImporterDTOToImporterSchedule (DataImporterDTO dataImporterDTO) {
 		if (dataImporterDTO == null) {
@@ -34,6 +31,23 @@ public class ImporterMapper {
 		return importerSchedule;
 	}
 	
+	public ImportExecutionDTO mapImportExecutionVOToImportExecutionDTO (ImportExecutionVO importExecutionVO) {
+		if (importExecutionVO == null) {
+			return null;
+		}
+		
+		ImportExecutionDTO importExecutionDTO = new ImportExecutionDTO();
+
+		importExecutionDTO.setCron(importExecutionVO.getCron());
+		importExecutionDTO.setId(importExecutionVO.getId().toString());
+		importExecutionDTO.setUser(importExecutionVO.getUser());
+		importExecutionDTO.setDate(importExecutionVO.getEndTime() != null ? new SimpleDateFormat("dd/MM/yyyy HH:MM:ss").format(importExecutionVO.getEndTime()):null);
+		importExecutionDTO.setType(mapJobNameToType(importExecutionVO.getType()));
+		importExecutionDTO.setStatus(importExecutionVO.getStatus());
+		
+		return importExecutionDTO;
+	}
+	
 	private String mapTypeToJobName(String type) {		
 		if (type == null) {
 			return null;			
@@ -49,6 +63,26 @@ public class ImporterMapper {
 		
 		if (type.equals("oaipmh")) {
 			return Constants.OAIPMH_JOB_NAME;
+		}
+		
+		return null;
+	}
+	
+	private String mapJobNameToType(String jobName) {		
+		if (jobName == null) {
+			return null;			
+		}		
+		
+		if (jobName.equals(Constants.CVN_JOB_NAME)) {
+			return "cvn";
+		}
+		
+		if (jobName.equals(Constants.DATASET_JOB_NAME)) {
+			return "dataset";
+		}
+		
+		if (jobName.equals(Constants.OAIPMH_JOB_NAME)) {
+			return "oaipmh";
 		}
 		
 		return null;

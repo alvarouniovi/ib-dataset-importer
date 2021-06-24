@@ -60,6 +60,10 @@ spring:
       - localhost:29092
     producer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
 ## Actuator
 management:

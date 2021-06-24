@@ -1,13 +1,17 @@
 package es.um.asio.importer.back.controller;
 
 import java.security.InvalidParameterException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.um.asio.domain.importer.ImporterSchedule;
 import es.um.asio.importer.back.dto.DataImporterDTO;
+import es.um.asio.importer.back.dto.ImportExecutionDTO;
 import es.um.asio.importer.back.mapper.ImporterMapper;
+import es.um.asio.importer.dto.ImportExecutionVO;
+import es.um.asio.importer.service.ImporterExecutionService;
 import es.um.asio.importer.service.ImporterSchedulerService;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -33,11 +40,22 @@ public class ImporterController {
 	@Autowired
 	private ImporterMapper importerMapper;
 	
+	@Autowired
+	private ImporterExecutionService importerExecutionService;
+	
 	@PostMapping(value = ImporterController.Mappings.SCHEDULE)
 	public ResponseEntity<Void> schedule(@RequestBody @Valid DataImporterDTO dataImporterDTO) {
 		ImporterSchedule importerSchedule = importerMapper.mapDataImporterDTOToImporterSchedule(dataImporterDTO);
 		importerSchedulerService.createSchedule(importerSchedule);
 		return new ResponseEntity<Void>(HttpStatus.OK);
+	}
+	
+	@GetMapping(value = ImporterController.Mappings.SEARCH)
+	public List<ImportExecutionDTO> search(final Pageable pageable) {		
+		return importerExecutionService.findImporterExecutions(pageable)
+				.stream()
+				.map(importerMapper::mapImportExecutionVOToImportExecutionDTO)
+				.collect(Collectors.toList());	
 	}
 	
 	@ExceptionHandler(InvalidParameterException.class)
@@ -59,6 +77,10 @@ public class ImporterController {
          * Mapping for schedule.
          */
         protected static final String SCHEDULE = "/schedule";
-
+        
+        /**
+         * Mapping for search.
+         */
+        protected static final String SEARCH = "/search";
     }
 }

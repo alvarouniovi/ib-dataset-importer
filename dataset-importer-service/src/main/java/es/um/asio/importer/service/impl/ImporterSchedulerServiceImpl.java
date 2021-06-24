@@ -36,6 +36,7 @@ public class ImporterSchedulerServiceImpl implements ImporterSchedulerService {
 	 */
 	@Autowired
 	private ImporterScheduleRepository repository;
+	
 
 	@Autowired
 	private SchedulerFactoryBean schedulerFactoryBean;
@@ -74,7 +75,8 @@ public class ImporterSchedulerServiceImpl implements ImporterSchedulerService {
 
 		ImporterSchedule importerScheduleSaved = repository.save(importerSchedule);
 		scheduleImporter(importerScheduleSaved, hasToReloadJobs(previous, importerScheduleSaved));
-	}
+	}	
+
 
 	private void scheduleImporter(ImporterSchedule importerSchedule) {
 		scheduleImporter(importerSchedule, true);
