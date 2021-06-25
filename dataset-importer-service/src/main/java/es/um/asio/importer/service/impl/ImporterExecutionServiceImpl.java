@@ -1,9 +1,7 @@
 package es.um.asio.importer.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -29,13 +27,11 @@ public class ImporterExecutionServiceImpl implements ImporterExecutionService{
 	private JobExecutionParameterRepository jobExecutionParameterRepository;
 	
 	@Override
-	public List<ImportExecutionVO> findImporterExecutions(Pageable pageable) {
-		return jobExecutionRepository.findBy(pageable)
-			.stream()
+	public Page<ImportExecutionVO> findImporterExecutions(Pageable pageable) {		
+		return jobExecutionRepository.findAll(pageable)
 			.map(this::mapJobExecutionToImportExecutionVO)
 			.map(this::fillJobExecutionParameters)			
-			.map(this::fillImportScheduleDatta)			
-			.collect(Collectors.toList());
+			.map(this::fillImportScheduleDatta);					
 	}
 	
 	private ImportExecutionVO mapJobExecutionToImportExecutionVO(JobExecution jobExecution) {
