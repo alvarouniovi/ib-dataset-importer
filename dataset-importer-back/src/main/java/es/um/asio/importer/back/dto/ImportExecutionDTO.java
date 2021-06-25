@@ -17,5 +17,4 @@ public class ImportExecutionDTO {
 	
 	private String cron;	
 	
-	private String status;
 }
