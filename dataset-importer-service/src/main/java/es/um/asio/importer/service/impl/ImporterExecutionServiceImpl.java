@@ -33,8 +33,8 @@ public class ImporterExecutionServiceImpl implements ImporterExecutionService{
 		return jobExecutionRepository.findBy(pageable)
 			.stream()
 			.map(this::mapJobExecutionToImportExecutionVO)
-			.map(this::fillJobExecutionParameters)
-			.map(this::fillImportScheduleDatta)
+			.map(this::fillJobExecutionParameters)			
+			.map(this::fillImportScheduleDatta)			
 			.collect(Collectors.toList());
 	}
 	
@@ -57,6 +57,10 @@ public class ImporterExecutionServiceImpl implements ImporterExecutionService{
 	}
 	
 	private ImportExecutionVO fillImportScheduleDatta(ImportExecutionVO importExecutionVO) {
+		if (importExecutionVO.getScheduleId() == null) {
+			return importExecutionVO;
+		}
+		
 		ImporterSchedule importerSchedule = repository.findById(importExecutionVO.getScheduleId()).orElse(null);
 		
 		if (importerSchedule != null) {
