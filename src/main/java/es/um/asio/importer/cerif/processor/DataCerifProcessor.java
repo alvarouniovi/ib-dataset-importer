@@ -1,4 +1,4 @@
-package es.um.asio.importer.oaipmh.processor;
+package es.um.asio.importer.cerif.processor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,19 +25,13 @@ import es.um.asio.importer.oaipmh.model.HeaderType;
 import es.um.asio.importer.oaipmh.model.OAIPMHtype;
 import es.um.asio.importer.oaipmh.model.SetType;
 import es.um.asio.importer.oaipmh.processor.mappings.ActaMapping;
-import es.um.asio.importer.oaipmh.processor.mappings.ActividadMapping;
-import es.um.asio.importer.oaipmh.processor.mappings.ActuacionMapping;
-import es.um.asio.importer.oaipmh.processor.mappings.ArticuloAcademicoMapping;
-import es.um.asio.importer.oaipmh.processor.mappings.ArticuloConferenciaMapping;
-import es.um.asio.importer.oaipmh.processor.mappings.ArticuloMapping;
 import es.um.asio.importer.oaipmh.writer.OaipmhWriter;
 
-public class DataOaipmhProcessor implements Tasklet {
-
+public class DataCerifProcessor implements Tasklet {
 	/**
 	 * Logger
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(DataOaipmhProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(DataCerifProcessor.class);
 
 	/**
 	 * The job execution id.
@@ -55,16 +49,16 @@ public class DataOaipmhProcessor implements Tasklet {
 	@Value("${app.data.path}")
 	private String dataPath;
 
-	/** The SGI factory endpoint. */
-	@Value("${app.services.oai.endpoint-list}")
+	/** The CERIF factory endpoint. */
+	@Value("${app.services.cerif.endpoint-list}")
 	private String uriFactoryEndpointList;
 
-	/** The SGI factory endpoint. */
-	@Value("${app.services.oai.endpoint-ids}")
+	/** The CERIF factory endpoint. */
+	@Value("${app.services.cerif.endpoint-ids}")
 	private String uriFactoryEndpointIds;
 
 	/** The uri factory endpoint. */
-	@Value("${app.services.oai.endpoint-xml}")
+	@Value("${app.services.cerif.endpoint-xml}")
 	private String uriFactoryEndpointXml;
 
 	/**
@@ -163,7 +157,7 @@ public class DataOaipmhProcessor implements Tasklet {
 
 				}
 			} else {
-				logger.info("nothing on response SGI");
+				logger.info("nothing on response CERIF");
 			}
 
 			eventNotifyWatchDog.takeTime("eventNotify");
@@ -187,43 +181,12 @@ public class DataOaipmhProcessor implements Tasklet {
 		List<InputData<DataSetData>> listObjects = null;
 
 		switch (setSpec) {
-		case Constants.ACTAS:
+		case Constants.OpenAIRE_CRIS_persons:
 			listObjects = ActaMapping.mappingActas(bodyXML, jobExecutionId, this.mapper);
-			if (listObjects != null && listObjects.size() != 0)
-				list.addAll(listObjects);
-			break;
-
-		case Constants.ACTIVIDAD:
-			listObjects = ActividadMapping.mappingActividad(bodyXML, jobExecutionId, this.mapper);
-			if (listObjects != null && listObjects.size() != 0)
-				list.addAll(listObjects);
-			break;
-
-		case Constants.ACTUACION:
-			listObjects = ActuacionMapping.mappingActuacion(bodyXML, jobExecutionId, this.mapper);
-			if (listObjects != null && listObjects.size() != 0)
-				list.addAll(listObjects);
-			break;
-
-		case Constants.ARTICULO:
-			listObjects = ArticuloMapping.mappingArticulo(bodyXML, jobExecutionId, this.mapper);
-			if (listObjects != null && listObjects.size() != 0)
-				list.addAll(listObjects);
-			break;
-
-		case Constants.ARTICULO_ACADEMICO:
-			listObjects = ArticuloAcademicoMapping.mappingArticuloAcademico(bodyXML, jobExecutionId, this.mapper);
-			if (listObjects != null && listObjects.size() != 0)
-				list.addAll(listObjects);
-			break;
-
-		case Constants.ARTICULO_CONFERENCIA:
-			listObjects = ArticuloConferenciaMapping.mappingArticuloConferencia(bodyXML, jobExecutionId, this.mapper);
 			if (listObjects != null && listObjects.size() != 0)
 				list.addAll(listObjects);
 			break;
 		}
 
 	}
-
 }
