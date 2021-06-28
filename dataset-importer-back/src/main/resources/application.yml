@@ -22,6 +22,9 @@ app:
       password: root
 #      url: jdbc:mysql://localhost:3306/asio_jobs?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
       url: jdbc:mysql://localhost:3307/asio_jobs?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    poolProperties:
+      maxPool: 100
+      minIdle: 15
   kafka:
     input-topic-name: input-data
     create-topics: true

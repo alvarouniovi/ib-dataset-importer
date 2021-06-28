@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import java.util.List;
 
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -27,6 +28,7 @@ import es.um.asio.importer.cvn.service.CvnService;
 import es.um.asio.importer.oaipmh.processor.DataOaipmhProcessor;
 
 @PersistJobDataAfterExecution
+@DisallowConcurrentExecution
 public class ImporterSchedulerJob implements Job {
 
 	public static final String IMPORTER_SCHEDULEE_PARAM = "importerScheduler";

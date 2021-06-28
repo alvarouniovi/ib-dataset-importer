@@ -109,7 +109,7 @@ public class ImporterSchedulerServiceImpl implements ImporterSchedulerService {
 			job.getJobDataMap().put(ImporterSchedulerJob.RELOAD_JOBS, reload);
 
 			CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(new TriggerKey(importerSchedule.getType()))
-					.withSchedule(CronScheduleBuilder.cronSchedule(importerSchedule.getCron())).build();
+					.withSchedule(CronScheduleBuilder.cronSchedule(importerSchedule.getCron()).withMisfireHandlingInstructionDoNothing()).build();
 
 			scheduler.scheduleJob(job, trigger);
 			logger.info(String.format("schedule - Scheduled quartz job. %s", importerSchedule.toString()));

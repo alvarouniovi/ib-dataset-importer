@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import es.um.asio.domain.DataSetData;
 import es.um.asio.importer.config.persistence.properties.DatasourceProperties;
 import es.um.asio.importer.config.persistence.properties.PersistenceProperties;
 
@@ -68,8 +67,12 @@ public class PersistenceConfig {
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         config.addDataSourceProperty("useServerPrepStmts", "true");
+        
 
-        return new HikariDataSource(config);
+        HikariDataSource dataSource = new HikariDataSource(config);
+        dataSource.setMaximumPoolSize(this.properties.getPoolProperties().getMaxPool());
+        dataSource.setMinimumIdle(this.properties.getPoolProperties().getMinIdle());     
+        return dataSource;
     }
 
 }

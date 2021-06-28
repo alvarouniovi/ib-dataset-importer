@@ -23,5 +23,7 @@ public class PersistenceProperties {
     @NotNull
     @NestedConfigurationProperty
     private DatasourceProperties datasource;
-
+    
+    @NestedConfigurationProperty
+    private DatasourcePoolProperties poolProperties;
 }
