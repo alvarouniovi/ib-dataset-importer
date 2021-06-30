@@ -9,7 +9,7 @@ public class ImportExecutionDTO {
 
 	private String id;
 	
-	private String date;
+	private String startTime;
 	
 	private String user;
 	

@@ -53,8 +53,10 @@ public class ImporterController {
 	
 	@GetMapping(value = ImporterController.Mappings.SEARCH)
 	public Page<ImportExecutionDTO> search(final Pageable pageable) {		
-		return importerExecutionService.findImporterExecutions(pageable)
-				.map(importerMapper::mapImportExecutionVOToImportExecutionDTO);				
+		Page<ImportExecutionDTO> result = importerExecutionService.findImporterExecutions(pageable)
+				.map(importerMapper::mapImportExecutionVOToImportExecutionDTO);
+		
+		return result;
 	}
 	
 	@ExceptionHandler(InvalidParameterException.class)
