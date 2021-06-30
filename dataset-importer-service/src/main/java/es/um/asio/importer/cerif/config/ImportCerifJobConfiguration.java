@@ -21,7 +21,7 @@ public class ImportCerifJobConfiguration {
 
 	// Configure job step
 	@Bean(name = Constants.CERIF_JOB_NAME)
-	public Job importOaipmhJob(@Autowired JobBuilderFactory jobBuilderFactory, final JobExecutionListener listener,
+	public Job importCerifJob(@Autowired JobBuilderFactory jobBuilderFactory, final JobExecutionListener listener,
 			@Autowired StepBuilderFactory stepBuilderFactory) {
 
 		Job job = jobBuilderFactory.get(Constants.CERIF_JOB_NAME).incrementer(new RunIdIncrementer()).listener(listener)
