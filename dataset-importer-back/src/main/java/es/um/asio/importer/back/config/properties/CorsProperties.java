@@ -18,47 +18,47 @@ import lombok.ToString;
 @Setter
 @ToString
 public class CorsProperties {
-    /**
-     * Enable or disable the CORS filter for this application.
-     */
-    private boolean enabled;
 
-    /**
-     * Allowed origin for CORS.
-     */
-    private String allowedOrigin;
+	/**
+	 * Enable or disable the CORS filter for this application.
+	 */
+	private boolean enabled;
 
-    /**
-     * Allowed methods for CORS.
-     */
-    private String allowedMethods;
+	/**
+	 * Allowed origin for CORS.
+	 */
+	private String allowedOrigin;
 
-    /**
-     * The allowed headers for CORS.
-     */
-    private String[] allowedHeaders;
+	/**
+	 * Allowed methods for CORS.
+	 */
+	private String allowedMethods;
 
-    /**
-     * CORS preflight max age allowed.
-     */
-    private String maxAge;
+	/**
+	 * The allowed headers for CORS.
+	 */
+	private String[] allowedHeaders;
 
-    /**
-     * Gets the allowed headers for CORS.
-     * 
-     * @return allowed headers for CORS.
-     */
-    public String[] getAllowedHeaders() {
-        return Arrays.copyOf(this.allowedHeaders, this.allowedHeaders.length);
-    }
+	/**
+	 * CORS preflight max age allowed.
+	 */
+	private String maxAge;
 
-    /**
-     * Sets the allowed headers for CORS.
-     * 
-     * @param allowedHeaders
-     *            allowed headers for CORS.
-     */
-    public void setAllowedHeaders(final String[] allowedHeaders) {
-        this.allowedHeaders = Arrays.copyOf(allowedHeaders, allowedHeaders.length);
-    }
+	/**
+	 * Gets the allowed headers for CORS.
+	 * 
+	 * @return allowed headers for CORS.
+	 */
+	public String[] getAllowedHeaders() {
+		return Arrays.copyOf(this.allowedHeaders, this.allowedHeaders.length);
+	}
+
+	/**
+	 * Sets the allowed headers for CORS.
+	 * 
+	 * @param allowedHeaders allowed headers for CORS.
+	 */
+	public void setAllowedHeaders(final String[] allowedHeaders) {
+		this.allowedHeaders = Arrays.copyOf(allowedHeaders, allowedHeaders.length);
+	}
 }

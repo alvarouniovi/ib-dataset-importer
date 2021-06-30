@@ -1,4 +1,4 @@
-package es.um.asio.importer.oaipmh.processor;
+package es.um.asio.importer.cerif.processor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,19 +25,13 @@ import es.um.asio.importer.oaipmh.model.HeaderType;
 import es.um.asio.importer.oaipmh.model.OAIPMHtype;
 import es.um.asio.importer.oaipmh.model.SetType;
 import es.um.asio.importer.oaipmh.processor.mappings.ActaMapping;
-import es.um.asio.importer.oaipmh.processor.mappings.ActividadMapping;
-import es.um.asio.importer.oaipmh.processor.mappings.ActuacionMapping;
-import es.um.asio.importer.oaipmh.processor.mappings.ArticuloAcademicoMapping;
-import es.um.asio.importer.oaipmh.processor.mappings.ArticuloConferenciaMapping;
-import es.um.asio.importer.oaipmh.processor.mappings.ArticuloMapping;
 import es.um.asio.importer.oaipmh.writer.OaipmhWriter;
 
-public class DataOaipmhProcessor implements Tasklet {
-
+public class DataCerifProcessor implements Tasklet {
 	/**
 	 * Logger
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(DataOaipmhProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(DataCerifProcessor.class);
 
 	/**
 	 * The job execution id.
@@ -52,20 +46,20 @@ public class DataOaipmhProcessor implements Tasklet {
 	@Autowired
 	private OaipmhBeansMapper mapper;
 
-	@Value("${app.services.oai.endpoint}")
-	public String oaiEndpoint;
+	@Value("${app.data.path}")
+	private String dataPath;
 
-	/** The SGI factory endpoint. */
-	@Value("${app.services.oai.endpoint-list}")
-	private String uriFactoryListContext;
+	/** The CERIF factory endpoint. */
+	@Value("${app.services.cerif.endpoint-list}")
+	private String uriFactoryEndpointList;
 
-	/** The SGI factory endpoint. */
-	@Value("${app.services.oai.endpoint-ids}")
-	private String uriFactoryIdsContext;
+	/** The CERIF factory endpoint. */
+	@Value("${app.services.cerif.endpoint-ids}")
+	private String uriFactoryEndpointIds;
 
 	/** The uri factory endpoint. */
-	@Value("${app.services.oai.endpoint-xml}")
-	private String uriFactoryXmlContext;
+	@Value("${app.services.cerif.endpoint-xml}")
+	private String uriFactoryEndpointXml;
 
 	/**
 	 * @inheritDoc
@@ -84,8 +78,7 @@ public class DataOaipmhProcessor implements Tasklet {
 
 		try {
 			restTemplate = new RestTemplate();
-			ResponseEntity<OAIPMHtype> response = restTemplate.getForEntity(oaiEndpoint.concat(uriFactoryListContext),
-					OAIPMHtype.class);
+			ResponseEntity<OAIPMHtype> response = restTemplate.getForEntity(uriFactoryEndpointList, OAIPMHtype.class);
 
 			if (response != null) {
 
@@ -97,8 +90,7 @@ public class DataOaipmhProcessor implements Tasklet {
 						for (SetType set : response.getBody().getListSets().getSet()) {
 							try {
 
-								responseIds = restTemplate.getForEntity(
-										oaiEndpoint.concat(uriFactoryIdsContext).concat(set.getSetSpec()),
+								responseIds = restTemplate.getForEntity(uriFactoryEndpointIds.concat(set.getSetSpec()),
 										OAIPMHtype.class);
 
 								if (responseIds != null) {
@@ -107,8 +99,8 @@ public class DataOaipmhProcessor implements Tasklet {
 									if (bodyIds != null) {
 
 										if (bodyIds.getError() != null && bodyIds.getError().size() != 0) {
-											logger.debug(bodyIds.getError().get(0).getValue() + " - URL: " + oaiEndpoint
-													.concat(uriFactoryIdsContext).concat(set.getSetSpec()));
+											logger.debug(bodyIds.getError().get(0).getValue() + " - URL: "
+													+ uriFactoryEndpointIds.concat(set.getSetSpec()));
 										} else if (bodyIds.getListIdentifiers() != null
 												&& bodyIds.getListIdentifiers().getHeader() != null) {
 
@@ -117,8 +109,8 @@ public class DataOaipmhProcessor implements Tasklet {
 												logger.info(
 														"Spec: " + set.getSetSpec() + ", ID: " + setID.getIdentifier());
 												try {
-													responseXml = restTemplate.getForEntity(oaiEndpoint
-															.concat(uriFactoryXmlContext).concat(setID.getIdentifier()),
+													responseXml = restTemplate.getForEntity(
+															uriFactoryEndpointXml.concat(setID.getIdentifier()),
 															OAIPMHtype.class);
 
 													if (responseXml != null) {
@@ -128,8 +120,7 @@ public class DataOaipmhProcessor implements Tasklet {
 															if (bodyXML.getError() != null
 																	&& bodyXML.getError().size() != 0) {
 																logger.debug(bodyXML.getError().get(0).getValue()
-																		+ " - URL: "
-																		+ oaiEndpoint.concat(uriFactoryXmlContext)
+																		+ " - URL: " + uriFactoryEndpointXml
 																				.concat(setID.getIdentifier()));
 															} else if (bodyXML != null) {
 
@@ -166,7 +157,7 @@ public class DataOaipmhProcessor implements Tasklet {
 
 				}
 			} else {
-				logger.info("nothing on response SGI");
+				logger.info("nothing on response CERIF");
 			}
 
 			eventNotifyWatchDog.takeTime("eventNotify");
@@ -190,46 +181,12 @@ public class DataOaipmhProcessor implements Tasklet {
 		List<InputData<DataSetData>> listObjects = null;
 
 		switch (setSpec) {
-		case Constants.ACTAS:
+		case Constants.OpenAIRE_CRIS_persons:
 			listObjects = ActaMapping.mappingActas(bodyXML, jobExecutionId, this.mapper);
-			if (listObjects != null && listObjects.size() != 0)
-				list.addAll(listObjects);
-			break;
-
-		case Constants.ACTIVIDAD:
-			listObjects = ActividadMapping.mappingActividad(bodyXML, jobExecutionId, this.mapper);
-			if (listObjects != null && listObjects.size() != 0)
-				list.addAll(listObjects);
-			break;
-
-		case Constants.ACTUACION:
-			listObjects = ActuacionMapping.mappingActuacion(bodyXML, jobExecutionId, this.mapper);
-			if (listObjects != null && listObjects.size() != 0)
-				list.addAll(listObjects);
-			break;
-
-		case Constants.ARTICULO:
-			listObjects = ArticuloMapping.mappingArticulo(bodyXML, jobExecutionId, this.mapper);
-			if (listObjects != null && listObjects.size() != 0)
-				list.addAll(listObjects);
-			break;
-
-		case Constants.ARTICULO_ACADEMICO:
-			listObjects = ArticuloAcademicoMapping.mappingArticuloAcademico(bodyXML, jobExecutionId, this.mapper);
-			if (listObjects != null && listObjects.size() != 0)
-				list.addAll(listObjects);
-			break;
-
-		case Constants.ARTICULO_CONFERENCIA:
-			listObjects = ArticuloConferenciaMapping.mappingArticuloConferencia(bodyXML, jobExecutionId, this.mapper);
 			if (listObjects != null && listObjects.size() != 0)
 				list.addAll(listObjects);
 			break;
 		}
 
-	}
-
-	public void setOaiEndpoint(String oaiEndpoint) {
-		this.oaiEndpoint = oaiEndpoint;
 	}
 }

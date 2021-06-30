@@ -9,7 +9,7 @@ public class ImportExecutionDTO {
 
 	private String id;
 	
-	private String date;
+	private String startTime;
 	
 	private String user;
 	
@@ -17,5 +17,4 @@ public class ImportExecutionDTO {
 	
 	private String cron;	
 	
-	private String status;
 }

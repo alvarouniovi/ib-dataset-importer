@@ -34,6 +34,8 @@ public class ImportResultUtil {
 			jobType = JobType.CVN;
 		} else if (jobExecution.getJobInstance().getJobName().equals(Constants.OAIPMH_JOB_NAME)) {
 			jobType = JobType.OAIPMH;
+		} else if (jobExecution.getJobInstance().getJobName().equals(Constants.CERIF_JOB_NAME)) {
+			jobType = JobType.CERIF;
 		}
 
 		ImportResult importResult = ImportResult.builder().startTime(jobExecution.getStartTime())

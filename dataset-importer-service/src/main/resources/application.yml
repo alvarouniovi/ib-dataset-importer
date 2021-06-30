@@ -30,7 +30,15 @@ app:
       endpoint-list: ${app.services.oai.endpoint}?verb=ListSets
       endpoint-xml: ${app.services.oai.endpoint}?verb=GetRecord&metadataPrefix=XML_ASIO&identifier=
       endpoint-ids: ${app.services.oai.endpoint}?verb=ListIdentifiers&metadataPrefix=XML_ASIO&set=
+
       
+# CERIF  
+    cerif:      
+      endpoint: https://cris.uns.ac.rs/OAIHandlerOpenAIRECRIS
+      endpoint-list: ${app.services.cerif.endpoint}?verb=ListSets
+      endpoint-xml: ${app.services.cerif.endpoint}?verb=GetRecord&metadataPrefix=oai_cerif_openaire&identifier=
+      endpoint-ids: ${app.services.cerif.endpoint}?verb=ListIdentifiers&metadataPrefix=oai_cerif_openaire&set=
+            
 # Spring configuration
 spring:
   batch:    
